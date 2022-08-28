@@ -2,10 +2,10 @@
 Note that Git does not care about empty directories so I could not include the sub-directories for each person in this repository. Instead take it upon yourself to follow this format when implementing functions.
 
 ## For Frontend
-frontend > src > *your_folder_name*
+src > *your_folder_name*
   
 ## For Backend
-backend > src > main > java > com > web > backend > *your_folder_name*
+src > main > java > com > web > backend > *your_folder_name*
   
 ## Folder Names
 - Employee Management -  - empManage
