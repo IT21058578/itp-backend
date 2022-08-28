@@ -21,8 +21,8 @@ src > main > java > com > web > backend > *your_folder_name*
 # Inital Message
 Hey guys so I set up 2 seperate git repositories for out backend. I feel like this will make deployment much easier
 so I opted for this option. Depending on what you guys use you might have to figure out how to pull, push and keep your local files in sync with these remote repositories.
-https://github.com/IT21058578/itp-frontend
-https://github.com/IT21058578/itp-backend
+- https://github.com/IT21058578/itp-frontend
+- https://github.com/IT21058578/itp-backend
 
 In the case you plan on using VSCode you can use this handy tutorial I found to keep both folders open at the same time to work with them. https://www.youtube.com/watch?v=2yOQUtP_GcY
 
