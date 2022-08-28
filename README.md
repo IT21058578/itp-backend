@@ -35,10 +35,12 @@ Here are some commands you may find helpful when working with git;
 
 You may found it more intuitive to use your editors built in git tools if you wish. VSCode by default commits to "master" branch instead of "main" branch. Run this command to fix that; 
 > git config --global init.defaultBranch main 
+  
 (Warning: This is a global configuration setting, If you want to do this locally, find a different way)
 
 For running the frontend you may just do 
 > npm start
+  
 Once you are in the directory. It will open on localhost:3000. The only thing that should be there is the text "Hello ITP!". Note that we are using FlowBite and TailwindCSS for our CSS Styling in the frontend.
 
 There is a Java Extension Pack aswell as a Spring Extension Pack for VSCode to make life easier when dealing with this. You should be able to run the main application without issues using these extensions. This makes it run on localhost:8080. You should not receive anything here except a "WhiteLabel Error Page"
