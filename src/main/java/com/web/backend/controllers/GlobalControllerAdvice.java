@@ -1,4 +1,4 @@
 package com.web.backend.controllers;
 
-public class ControllerAdvice {
+public class GlobalControllerAdvice {
 }
