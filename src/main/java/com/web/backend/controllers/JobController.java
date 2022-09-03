@@ -6,11 +6,9 @@ import com.web.backend.dto.JobStatistics;
 import com.web.backend.model.job.Job;
 import com.web.backend.services.JobService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,13 +17,12 @@ import java.util.List;
 public class JobController {
     private final JobService jobService;
 
-    @GetMapping("/calender")
-    public ResponseEntity<JobCalender> getJobCalender(@RequestParam Integer month,
-                                                      @RequestParam Integer year) {
+    @GetMapping(params = {"month", "year"})
+    public ResponseEntity<List<JobCalender>> getJobCalender(@RequestParam Integer month, @RequestParam Integer year) {
         return ResponseEntity.ok().body(jobService.getJobCalender(month, year));
     }
 
-    @GetMapping("/stat")
+    @GetMapping(params = {"month", "year", "startDay", "endDay"})
     public ResponseEntity<JobStatistics> getJobStatistics(@RequestParam Integer month,
                                                           @RequestParam Integer year,
                                                           @RequestParam Integer startDay,
@@ -34,22 +31,25 @@ public class JobController {
     }
 
     //TODO: Resolve Search Params
-    @GetMapping("/list")
-    public ResponseEntity<List<JobSimple>> getJobList() {
-        return ResponseEntity.ok().body(jobService.getJobList());
+    @GetMapping(params = {"pgNum", "pgSize"})
+    public ResponseEntity<Page<JobSimple>> getJobList(@RequestParam(defaultValue = "1") Integer pgNum,
+                                                      @RequestParam(defaultValue = "10") Integer pgSize) {
+        return ResponseEntity.ok().body(jobService.getJobList(pgNum, pgSize));
     }
 
-    @GetMapping("/single")
-    public ResponseEntity<Job> getJobDetails(@RequestParam Integer jobId) {
+    @GetMapping(params = {"jobId"})
+    public ResponseEntity<Job> getJobDetails(@RequestParam String jobId) {
         return ResponseEntity.ok().body(jobService.getJobDetails(jobId));
 
     }
 
-    public void editJob() {
-        jobService.editJob();
+    public ResponseEntity<?> editJob(@RequestParam String jobId, @RequestBody Job job) {
+        jobService.editJob(jobId, job);
+        return ResponseEntity.ok().build();
     }
 
-    public void deleteJob() {
-        jobService.deleteJob();
+    public ResponseEntity<?> deleteJob(@RequestParam String jobId) {
+        jobService.deleteJob(jobId);
+        return ResponseEntity.ok().build();
     }
 }

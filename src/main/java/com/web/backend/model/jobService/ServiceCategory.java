@@ -15,4 +15,11 @@ public class ServiceCategory {
     private String imgUrl;
     private String desc;
     private List<Service> services;
+
+    public ServiceCategory(String name, String imgUrl, String desc, List<Service> services) {
+        this.name = name;
+        this.imgUrl = imgUrl;
+        this.desc = desc;
+        this.services = services;
+    }
 }

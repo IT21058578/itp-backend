@@ -25,4 +25,17 @@ public class AppUser {
     private LocalDateTime createdAt;
     private LocalDateTime lastLoggedAt;
     private List<String> permissions;
+
+    public AppUser(String firstName, String lastName, String address, String email, String password, UserKind userKind, LocalDate dateOfBirth, LocalDateTime createdAt, LocalDateTime lastLoggedAt, List<String> permissions) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.address = address;
+        this.email = email;
+        this.password = password;
+        this.userKind = userKind;
+        this.dateOfBirth = dateOfBirth;
+        this.createdAt = createdAt;
+        this.lastLoggedAt = lastLoggedAt;
+        this.permissions = permissions;
+    }
 }

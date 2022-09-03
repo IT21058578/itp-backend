@@ -11,7 +11,7 @@ public class Invoice {
     //private String id; //No Id as stored with job.
     private LocalDateTime createdAt;
     private LocalDateTime expiresAt;
-    private double totalPayment;
+    private double subTotal;
     private double discount;
     private double total;
     private double tax;

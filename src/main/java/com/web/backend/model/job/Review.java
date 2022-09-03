@@ -7,5 +7,5 @@ import lombok.NoArgsConstructor;
 @Data @NoArgsConstructor @AllArgsConstructor
 public class Review {
     private String desc;
-    private String rating;
+    private float rating;
 }

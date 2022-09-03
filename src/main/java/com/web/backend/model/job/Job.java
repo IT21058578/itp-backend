@@ -29,4 +29,19 @@ public class Job {
     private LocalDateTime createdAt;
     private LocalDateTime lastUpdatedAt;
     private List<EmployeeSimple> crewList;
+
+    public Job(String createdBy, String lastUpdatedBy, Review review, Service service, Invoice invoice, Payment payment, ClientSimple client, LocalDateTime startTime, LocalDateTime endTime, LocalDateTime createdAt, LocalDateTime lastUpdatedAt, List<EmployeeSimple> crewList) {
+        this.createdBy = createdBy;
+        this.lastUpdatedBy = lastUpdatedBy;
+        this.review = review;
+        this.service = service;
+        this.invoice = invoice;
+        this.payment = payment;
+        this.client = client;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.createdAt = createdAt;
+        this.lastUpdatedAt = lastUpdatedAt;
+        this.crewList = crewList;
+    }
 }
