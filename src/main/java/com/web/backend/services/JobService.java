@@ -1,8 +1,8 @@
 package com.web.backend.services;
 
-import com.web.backend.dto.JobCalender;
+import com.web.backend.dto.JobDayStat;
 import com.web.backend.dto.JobSimple;
-import com.web.backend.dto.JobStatistics;
+import com.web.backend.dto.JobPeriodStat;
 import com.web.backend.exception.NotFoundException;
 import com.web.backend.model.job.Job;
 import com.web.backend.repositories.JobRepo;
@@ -28,7 +28,7 @@ public class JobService {
     private final MongoTemplate template;
     private final JobRepo repo;
 
-    public List<JobCalender> getJobCalender(Integer month, Integer year) {
+    public List<JobDayStat> getJobCalender(Integer month, Integer year) {
         //Defining start and end dateTime.
         log.info("Preparing startDateTime and endDateTime...");
         var startDateTime = LocalDateTime.of(
@@ -48,12 +48,12 @@ public class JobService {
         var jobListsPerDay = new ArrayList<List<Job>>(YearMonth.of(year,month).lengthOfMonth());
         jobList.forEach(job -> jobListsPerDay.get(job.getCreatedAt().getDayOfMonth()).add(job));
 
-        //JobCalender list is created according to received data and returned.
+        //JobDayStat list is created according to received data and returned.
         log.info("Returning list...");
-        return jobListsPerDay.stream().map(JobCalender::new).toList();
+        return jobListsPerDay.stream().map(JobDayStat::new).toList();
     }
 
-    public JobStatistics getJobStatistcs(Integer month, Integer year, Integer startDay, Integer endDay) {
+    public JobPeriodStat getJobStatistcs(Integer month, Integer year, Integer startDay, Integer endDay) {
         //TODO: Finish function.
         log.info("Preparing startDateTime and endDateTime...");
         var startDateTime = LocalDateTime.of(
@@ -68,12 +68,13 @@ public class JobService {
         query.addCriteria(Criteria.where("createdAt").gte(startDateTime).lt(endDateTime));
         var jobList = template.find(query, Job.class);
 
-        //Jobs are found and seperated by day.
-        log.info("Manipulating received data...");
+        //Jobs are found and statistics are formulated
+        log.info("Creating statistical data...");
+        var jobStatistics = new JobPeriodStat(jobList);
 
-        //JobCalender list is created according to received data and returned.
-        log.info("Returning list...");
-        return null;
+        //JobDayStat list is created according to received data and returned.
+        log.info("Returning statistics...");
+        return jobStatistics;
     }
 
     public Page<JobSimple> getJobList(int pgNum, int pgSize) {
