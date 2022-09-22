@@ -1,5 +1,6 @@
 package com.web.backend.utils.heaps;
 
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.PriorityQueue;
 
@@ -24,6 +25,15 @@ public class CustomMinHeap<T> {
         } else if (queue.size() < maxSize) {
             queue.add(new HeapNode<>(key, value));
         }
+    }
+
+    public ArrayList<T> toList() {
+        var list = new ArrayList<T>(queue.size());
+        HeapNode<T> last;
+        while ((last = queue.poll()) != null) {
+            list.add(last.getValue());
+        }
+        return list;
     }
 
     public T pollAndGetValue() {

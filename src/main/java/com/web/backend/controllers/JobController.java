@@ -31,20 +31,6 @@ public class JobController {
         return ResponseEntity.ok().body(jobCalenderList);
     }
 
-    @GetMapping(params = {"month", "year", "startDay", "endDay"})
-    public ResponseEntity<JobPeriodStat> getJobStatistics(@RequestParam Integer month,
-                                                          @RequestParam Integer year,
-                                                          @RequestParam Integer startDay,
-                                                          @RequestParam Integer endDay) {
-        log.info("JobController received GET Request with params {month, year, startDay, endDay}");
-        watch.start();
-        var jobStatistcs = jobService.getJobStatistcs(month, year, startDay, endDay);
-        log.info("GET Request with params {month, year} took {} to process", watch);
-        watch.stop();
-        watch.reset();
-        return ResponseEntity.ok().body(jobStatistcs);
-    }
-
     //TODO: Resolve Search Params
     @GetMapping(params = {"pgNum", "pgSize"})
     public ResponseEntity<Page<JobSimple>> getJobList(@RequestParam(defaultValue = "1") Integer pgNum,
@@ -62,15 +48,16 @@ public class JobController {
     public ResponseEntity<Job> getJobDetails(@RequestParam String jobId) {
         log.info("JobController received GET Request with params {jobId}");
         return ResponseEntity.ok().body(jobService.getJobDetails(jobId));
-
     }
 
+    @PutMapping
     public ResponseEntity<?> editJob(@RequestParam String jobId, @RequestBody Job job) {
         log.info("JobController received PUT Request with params {jobId} and body {job}");
         jobService.editJob(jobId, job);
         return ResponseEntity.ok().build();
     }
 
+    @DeleteMapping
     public ResponseEntity<?> deleteJob(@RequestParam String jobId) {
         log.info("JobController received DELETE Request with params {jobId}");
         jobService.deleteJob(jobId);

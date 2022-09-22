@@ -5,7 +5,7 @@ import com.web.backend.dto.JobSimple;
 import com.web.backend.dto.JobPeriodStat;
 import com.web.backend.exception.NotFoundException;
 import com.web.backend.model.job.Job;
-import com.web.backend.repositories.JobRepo;
+import com.web.backend.repositories.JobRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -26,7 +26,7 @@ import java.util.List;
 @Service @AllArgsConstructor @Slf4j
 public class JobService {
     private final MongoTemplate template;
-    private final JobRepo repo;
+    private final JobRepository repo;
 
     public List<JobDayStat> getJobCalender(Integer month, Integer year) {
         //Defining start and end dateTime.
@@ -51,30 +51,6 @@ public class JobService {
         //JobDayStat list is created according to received data and returned.
         log.info("Returning list...");
         return jobListsPerDay.stream().map(JobDayStat::new).toList();
-    }
-
-    public JobPeriodStat getJobStatistcs(Integer month, Integer year, Integer startDay, Integer endDay) {
-        //TODO: Finish function.
-        log.info("Preparing startDateTime and endDateTime...");
-        var startDateTime = LocalDateTime.of(
-                year, month, startDay, 0, 0);
-        var endDateTime = LocalDateTime.of(
-                year, month, endDay, 23 ,59);
-        log.info("Built startDateTime and endDateTime, {} , {}", startDateTime, endDateTime);
-
-        //Building query.
-        log.info("Building query...");
-        Query query = new Query();
-        query.addCriteria(Criteria.where("createdAt").gte(startDateTime).lt(endDateTime));
-        var jobList = template.find(query, Job.class);
-
-        //Jobs are found and statistics are formulated
-        log.info("Creating statistical data...");
-        var jobStatistics = new JobPeriodStat(jobList);
-
-        //JobDayStat list is created according to received data and returned.
-        log.info("Returning statistics...");
-        return jobStatistics;
     }
 
     public Page<JobSimple> getJobList(int pgNum, int pgSize) {
