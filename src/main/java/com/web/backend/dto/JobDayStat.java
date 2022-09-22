@@ -28,13 +28,13 @@ public class JobDayStat {
 
         if (!jobs.isEmpty()) {
             jobsWorked = jobs.size();
-            day = jobs.get(0).getCreatedAt().toLocalDate();
+            day = jobs.get(0).getStartTime().toLocalDate();
 
             for (Job job : jobs) {
-                crewDeployed += job.getCrewList().size();
+                crewDeployed += job.getCrewList() != null ? job.getCrewList().size() : 0;
                 hoursWorked += Math.abs(Duration.between(job.getStartTime(), job.getEndTime()).toHours());
-                totalRating += job.getReview().getRating();
-                earnings += job.getInvoice().getTotal(); //TODO: Ensure this is correct value when in production.
+                totalRating += job.getReview() != null ? job.getReview().getRating() : 0;
+                earnings += job.getInvoice() != null ? job.getInvoice().getTotal() : 0; //TODO: Ensure this is correct value when in production.
             }
         }
 

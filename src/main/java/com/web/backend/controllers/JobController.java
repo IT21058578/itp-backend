@@ -15,19 +15,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RequestMapping("/api/job") @RestController @Slf4j
-@AllArgsConstructor
+@AllArgsConstructor @CrossOrigin
 public class JobController {
     private final JobService jobService;
-    private final Stopwatch watch = Stopwatch.createUnstarted(); //Performance benchmarking
 
     @GetMapping(params = {"month", "year"})
     public ResponseEntity<List<JobDayStat>> getJobCalender(@RequestParam Integer month, @RequestParam Integer year) {
         log.info("JobController received GET Request with params {month, year}");
-        watch.start();
         var jobCalenderList = jobService.getJobCalender(month, year);
-        log.info("GET Request with params {month, year} took {} to process", watch);
-        watch.stop();
-        watch.reset();
         return ResponseEntity.ok().body(jobCalenderList);
     }
 
@@ -36,11 +31,7 @@ public class JobController {
     public ResponseEntity<Page<JobSimple>> getJobList(@RequestParam(defaultValue = "1") Integer pgNum,
                                                       @RequestParam(defaultValue = "10") Integer pgSize) {
         log.info("JobController received GET Request with params {pgNum, pgSize, ...}");
-        watch.start();
         var jobSimplePage = jobService.getJobList(pgNum, pgSize);
-        log.info("GET Request with params {month, year} took {} to process", watch);
-        watch.stop();
-        watch.reset();
         return ResponseEntity.ok().body(jobSimplePage);
     }
 

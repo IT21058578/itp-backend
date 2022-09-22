@@ -40,13 +40,17 @@ public class JobService {
         //Building query.
         log.info("Building query...");
         Query query = new Query();
-        query.addCriteria(Criteria.where("createdAt").gte(startDateTime).lt(endDateTime));
+        query.addCriteria(Criteria.where("startTime").gte(startDateTime).lt(endDateTime));
         var jobList = template.find(query, Job.class);
 
         //Jobs are found and seperated by day.
-        log.info("Manipulating received data...");
+        log.info("Manipulating received data... size of data is {} ", jobList.size());
         var jobListsPerDay = new ArrayList<List<Job>>(YearMonth.of(year,month).lengthOfMonth());
-        jobList.forEach(job -> jobListsPerDay.get(job.getCreatedAt().getDayOfMonth()).add(job));
+        while (jobListsPerDay.size() < YearMonth.of(year,month).lengthOfMonth()) {
+            jobListsPerDay.add(new ArrayList<Job>());
+        }
+        log.info("Length of jobListsPerDay is {} ", jobListsPerDay.size());
+        jobList.forEach(job -> jobListsPerDay.get(job.getStartTime().getDayOfMonth() - 1).add(job));
 
         //JobDayStat list is created according to received data and returned.
         log.info("Returning list...");
