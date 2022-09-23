@@ -1,5 +1,6 @@
 package com.web.backend.model.user;
 
+import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Data @NoArgsConstructor @AllArgsConstructor
@@ -20,13 +22,13 @@ public class AppUser {
     private String address;
     private String email;
     private String password;
-    private UserKind userKind;
+    private UserType userKind;
     private LocalDate dateOfBirth;
     private LocalDateTime createdAt;
     private LocalDateTime lastLoggedAt;
     private List<String> permissions;
 
-    public AppUser(String firstName, String lastName, String address, String email, String password, UserKind userKind, LocalDate dateOfBirth, LocalDateTime createdAt, LocalDateTime lastLoggedAt, List<String> permissions) {
+    public AppUser(String firstName, String lastName, String address, String email, String password, UserType userKind, LocalDate dateOfBirth, LocalDateTime lastLoggedAt, List<String> permissions) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;
@@ -34,8 +36,8 @@ public class AppUser {
         this.password = password;
         this.userKind = userKind;
         this.dateOfBirth = dateOfBirth;
-        this.createdAt = createdAt;
-        this.lastLoggedAt = lastLoggedAt;
+        this.createdAt = LocalDateTime.now();
+        this.lastLoggedAt = LocalDateTime.now();
         this.permissions = permissions;
     }
 }
