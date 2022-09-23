@@ -1,9 +1,7 @@
 package com.web.backend.controllers;
 
-import com.google.common.base.Stopwatch;
 import com.web.backend.dto.JobDayStat;
 import com.web.backend.dto.JobSimple;
-import com.web.backend.dto.JobPeriodStat;
 import com.web.backend.model.job.Job;
 import com.web.backend.services.JobService;
 import lombok.AllArgsConstructor;
@@ -29,9 +27,23 @@ public class JobController {
     //TODO: Resolve Search Params
     @GetMapping(params = {"pgNum", "pgSize"})
     public ResponseEntity<Page<JobSimple>> getJobList(@RequestParam(defaultValue = "1") Integer pgNum,
-                                                      @RequestParam(defaultValue = "10") Integer pgSize) {
+                                                      @RequestParam(defaultValue = "10") Integer pgSize,
+                                                      @RequestParam(required = false, defaultValue = "") String jobId,
+                                                      @RequestParam(required = false, defaultValue = "ignore") String lengthSelect,
+                                                      @RequestParam(required = false, defaultValue = "0") Integer length,
+                                                      @RequestParam(required = false, defaultValue = "ignore") String crewSelect,
+                                                      @RequestParam(required = false, defaultValue = "0") Integer crew,
+                                                      @RequestParam(required = false, defaultValue = "ignore") String revenueSelect,
+                                                      @RequestParam(required = false, defaultValue = "0") Double revenue,
+                                                      @RequestParam(required = false, defaultValue = "ignore") String ratingSelect,
+                                                      @RequestParam(required = false, defaultValue = "0") Double rating,
+                                                      @RequestParam(required = false, defaultValue = "") String sortCol,
+                                                      @RequestParam(required = false, defaultValue = "") String sortDir) {
         log.info("JobController received GET Request with params {pgNum, pgSize, ...}");
-        var jobSimplePage = jobService.getJobList(pgNum, pgSize);
+        var jobSimplePage = jobService.getJobList(pgNum, pgSize, jobId,
+                lengthSelect, length, crewSelect, crew,
+                revenueSelect, revenue, ratingSelect, rating,
+                sortCol, sortDir);
         return ResponseEntity.ok().body(jobSimplePage);
     }
 
