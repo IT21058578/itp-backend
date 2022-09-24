@@ -21,7 +21,6 @@ import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 //TODO: Make all functions
 @Service @AllArgsConstructor @Slf4j
@@ -106,7 +105,7 @@ public class JobService {
         }
 
         log.info("Limiting search according to page parameters...");
-        //aggregationPipeline.add(Aggregation.skip(pageRequest.getPageNumber() * pageRequest.getPageSize())); //TODO: Enable this once infinite scrolling is implemented.
+        aggregationPipeline.add(Aggregation.skip(pageRequest.getPageNumber() * pageRequest.getPageSize())); //TODO: Enable this once infinite scrolling is implemented.
         aggregationPipeline.add(Aggregation.limit(pageRequest.getPageSize()));
 
         log.info("Finalizing aggregation pipeline...");
