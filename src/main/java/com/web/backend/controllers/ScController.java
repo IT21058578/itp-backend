@@ -1,9 +1,9 @@
-package com.atles.test.controller;
+package com.web.backend.controllersr;
 
-import com.atles.test.model.SC;
+import com.web.backend.model.SC;
 
-import com.atles.test.repositories.ScRepository;
-import com.atles.test.services.SqGenarator;
+import com.web.backend.repositories.ScRepository;
+import com.web.backend.services.SqGenarator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
