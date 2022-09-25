@@ -1,7 +1,6 @@
+package com.web.backend.repositories;
 
-package com.atles.test.repositories;
-
-import com.atles.test.model.BasicPriceOfServices;
+import com.web.backend.model.BasicPriceOfServices;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
