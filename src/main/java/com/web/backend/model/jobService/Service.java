@@ -20,4 +20,5 @@ public class Service {
         this.desc = desc;
         this.basicPrice = basicPrice;
     }
+
 }
