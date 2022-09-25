@@ -1,6 +1,6 @@
-package com.atles.test.services;
+package com.web.backend.services;
 
-import com.atles.test.model.DbSequence;
+import com.web.backend.model.DbSequence;
 import static org.springframework.data.mongodb.core.query.Query.query;
 import java.util.Objects;
 import static org.springframework.data.mongodb.core.FindAndModifyOptions.options;

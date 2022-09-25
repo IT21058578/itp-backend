@@ -1,6 +1,6 @@
-package com.atles.test.repositories;
+package com.web.backend.repositories;
 
-import com.atles.test.model.LaundryServices;
+import com.web.backend.model.LaundryServices;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 

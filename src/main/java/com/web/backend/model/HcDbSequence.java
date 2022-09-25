@@ -1,4 +1,4 @@
-package com.atles.test.model;
+package com.web.backend.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;

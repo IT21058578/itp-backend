@@ -1,8 +1,8 @@
-package com.atles.test.controller;
-import com.atles.test.model.BasicPriceOfServices;
-import com.atles.test.model.SC;
-import com.atles.test.repositories.BasicPriceRepository;
-import com.atles.test.services.SqGenarator;
+package com.web.backend.controllers;
+import com.web.backend.model.BasicPriceOfServices;
+import com.web.backend.model.SC;
+import com.web.backend.repositories.BasicPriceRepository;
+import com.web.backend.services.SqGenarator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

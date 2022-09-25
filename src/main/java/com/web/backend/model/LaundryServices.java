@@ -1,4 +1,4 @@
-package com.atles.test.model;
+package com.web.backend.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
@@ -47,4 +47,5 @@ public class LaundryServices{
     public void setTotal(double total) {
         this.total = total;
     }
+   
 }
