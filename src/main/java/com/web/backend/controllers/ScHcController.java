@@ -1,10 +1,10 @@
-package com.atles.test.controller;
+package com.web.backend.controllers;
 
 import com.atles.test.model.HomeCleaning;
 
-import com.atles.test.model.SC;
-import com.atles.test.repositories.ScHcRepo;
-import com.atles.test.services.HcSqGenarator;
+import com.web.backend.model.SC;
+import com.web.backend.repositories.ScHcRepo;
+import com.web.backend.services.HcSqGenarator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
