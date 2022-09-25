@@ -1,7 +1,7 @@
-package com.atles.test.services;
+package com.web.backend.services;
 
 
-import com.atles.test.model.HcDbSequence;
+import com.web.backend.model.HcDbSequence;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Update;
