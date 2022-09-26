@@ -1,8 +1,4 @@
 package com.web.backend.controllers;
-<<<<<<< HEAD
-
-=======
->>>>>>> refs/remotes/origin/main
 
 import com.web.backend.model.HomeCleaning;
 import com.web.backend.model.LaundryServices;
