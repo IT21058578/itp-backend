@@ -1,8 +1,6 @@
 package com.web.backend.controllers;
 
 import com.atles.test.model.HomeCleaning;
-
-import com.web.backend.model.SC;
 import com.web.backend.repositories.ScHcRepo;
 import com.web.backend.services.HcSqGenarator;
 import org.springframework.beans.factory.annotation.Autowired;
