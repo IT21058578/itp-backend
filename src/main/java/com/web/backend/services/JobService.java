@@ -1,20 +1,20 @@
 package com.web.backend.services;
 
-import com.web.backend.dto.JobCalender;
+import com.web.backend.dto.JobDayStat;
 import com.web.backend.dto.JobSimple;
-import com.web.backend.dto.JobStatistics;
 import com.web.backend.exception.NotFoundException;
 import com.web.backend.model.job.Job;
-import com.web.backend.repositories.JobRepo;
+import com.web.backend.repositories.JobRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -26,9 +26,9 @@ import java.util.List;
 @Service @AllArgsConstructor @Slf4j
 public class JobService {
     private final MongoTemplate template;
-    private final JobRepo repo;
+    private final JobRepository repo;
 
-    public List<JobCalender> getJobCalender(Integer month, Integer year) {
+    public List<JobDayStat> getJobCalender(Integer month, Integer year) {
         //Defining start and end dateTime.
         log.info("Preparing startDateTime and endDateTime...");
         var startDateTime = LocalDateTime.of(
@@ -40,66 +40,82 @@ public class JobService {
         //Building query.
         log.info("Building query...");
         Query query = new Query();
-        query.addCriteria(Criteria.where("createdAt").gte(startDateTime).lt(endDateTime));
+        query.addCriteria(Criteria.where("startTime").gte(startDateTime).lt(endDateTime));
         var jobList = template.find(query, Job.class);
 
         //Jobs are found and seperated by day.
-        log.info("Manipulating received data...");
+        log.info("Manipulating received data... size of data is {} ", jobList.size());
         var jobListsPerDay = new ArrayList<List<Job>>(YearMonth.of(year,month).lengthOfMonth());
-        jobList.forEach(job -> jobListsPerDay.get(job.getCreatedAt().getDayOfMonth()).add(job));
+        while (jobListsPerDay.size() < YearMonth.of(year,month).lengthOfMonth()) {
+            jobListsPerDay.add(new ArrayList<Job>());
+        }
+        log.info("Length of jobListsPerDay is {} ", jobListsPerDay.size());
+        jobList.forEach(job -> jobListsPerDay.get(job.getStartTime().getDayOfMonth() - 1).add(job));
 
-        //JobCalender list is created according to received data and returned.
+        //JobDayStat list is created according to received data and returned.
         log.info("Returning list...");
-        return jobListsPerDay.stream().map(JobCalender::new).toList();
+        return jobListsPerDay.stream().map(JobDayStat::new).toList();
     }
 
-    public JobStatistics getJobStatistcs(Integer month, Integer year, Integer startDay, Integer endDay) {
-        //TODO: Finish function.
-        log.info("Preparing startDateTime and endDateTime...");
-        var startDateTime = LocalDateTime.of(
-                year, month, startDay, 0, 0);
-        var endDateTime = LocalDateTime.of(
-                year, month, endDay, 23 ,59);
-        log.info("Built startDateTime and endDateTime, {} , {}", startDateTime, endDateTime);
-
-        //Building query.
-        log.info("Building query...");
-        Query query = new Query();
-        query.addCriteria(Criteria.where("createdAt").gte(startDateTime).lt(endDateTime));
-        var jobList = template.find(query, Job.class);
-
-        //Jobs are found and seperated by day.
-        log.info("Manipulating received data...");
-
-        //JobCalender list is created according to received data and returned.
-        log.info("Returning list...");
-        return null;
-    }
-
-    public Page<JobSimple> getJobList(int pgNum, int pgSize) {
-        //TODO: Add support for searching by: Time, jobId, crewNum, earnings, etc.
-        log.info("Preparing variables...");
-        //Variables should be prepared here.
-
-        //Building query.
-        log.info("Building query...");
+    public Page<JobSimple> getJobList(int pgNum, int pgSize, String jobId, String lengthSelect, Integer length, String crewSelect, Integer crew, String revenueSelect, Double revenue, String ratingSelect, Double rating, String sortCol, String sortDir) {
+        //Making aggregation pipeline.
+        log.info("Building aggregation pipeline...");
         var pageRequest = PageRequest.of(pgNum, pgSize);
+        var aggregationPipeline = new ArrayList<AggregationOperation>();
+        aggregationPipeline.add(Aggregation.project()
+                        .andExpression("{$toString : {$getField : {$literal: '_id'}}}").as("tempId") //NECESSARY TO DO ID SEARCHING. WE DO NOT KEEP THIS FIELD IN JOB SIMPLE CLASS THOUGH
+                        .andExpression("{$size : '$crewList'}").as("crewDeployed")
+                        .andExpression("{$dateDiff : { startDate: '$startTime', endDate: '$endTime', unit: 'hour'}}").as("hoursWorked")
+                        .andExpression("{$getField : {$literal: 'startTime'}}").as("date")
+                        .andExpression("{$getField : { field : {$literal: 'total'}, input: '$invoice'}}").as("earnings")
+                        .andExpression("{$getField : { field : {$literal: 'rating'}, input: '$review'}}").as("rating"));
+
+        log.info("Modifying pipeline according to searching parameters...");
+        if (!jobId.isBlank()) {
+            aggregationPipeline.add(Aggregation.match(Criteria.where("tempId").regex(jobId)));
+        }
+
+        switch (lengthSelect) {
+            case "lessThan" -> aggregationPipeline.add(Aggregation.match(Criteria.where("hoursWorked").lt(length)));
+            case "greaterThan" -> aggregationPipeline.add(Aggregation.match(Criteria.where("hoursWorked").gt(length)));
+            case "equal" -> aggregationPipeline.add(Aggregation.match(Criteria.where("hoursWorked").is(length)));
+        }
+        switch (crewSelect) {
+            case "lessThan" -> aggregationPipeline.add(Aggregation.match(Criteria.where("crewDeployed").lt(crew)));
+            case "greaterThan" -> aggregationPipeline.add(Aggregation.match(Criteria.where("crewDeployed").gt(crew)));
+            case "equal" -> aggregationPipeline.add(Aggregation.match(Criteria.where("crewDeployed").is(crew)));
+        }
+        switch (revenueSelect) {
+            case "lessThan" -> aggregationPipeline.add(Aggregation.match(Criteria.where("earnings").lt(revenue)));
+            case "greaterThan" -> aggregationPipeline.add(Aggregation.match(Criteria.where("earnings").gt(revenue)));
+            case "equal" -> aggregationPipeline.add(Aggregation.match(Criteria.where("earnings").is(revenue)));
+        }
+        switch (ratingSelect) {
+            case "lessThan" -> aggregationPipeline.add(Aggregation.match(Criteria.where("rating").lt(rating)));
+            case "greaterThan" -> aggregationPipeline.add(Aggregation.match(Criteria.where("rating").gt(rating)));
+            case "equal" -> aggregationPipeline.add(Aggregation.match(Criteria.where("rating").is(rating)));
+        }
+
+        log.info("Modifying pipeline according to sorting parameters...");
+        if(sortCol != null && !sortCol.isBlank()) {
+            switch (sortDir) {
+                case "asc" -> aggregationPipeline.add(Aggregation.sort(Sort.Direction.ASC, sortCol));
+                case "desc" -> aggregationPipeline.add(Aggregation.sort(Sort.Direction.DESC, sortCol));
+            }
+        }
+
+        log.info("Limiting search according to page parameters...");
+        aggregationPipeline.add(Aggregation.skip(pageRequest.getPageNumber() * pageRequest.getPageSize())); //TODO: Enable this once infinite scrolling is implemented.
+        aggregationPipeline.add(Aggregation.limit(pageRequest.getPageSize()));
+
+        log.info("Finalizing aggregation pipeline...");
+        var aggregation = Aggregation.newAggregation(aggregationPipeline);
+
+        log.info("Creating the job simple page...");
         var query = new Query().with(pageRequest);
-
-        log.info("Adding Criteria...");
-        //Criteria should be added here.
-
-        log.info("Creating the job page...");
-        var jobPage =  PageableExecutionUtils.getPage(
-                template.find(query, Job.class),
-                pageRequest,
-                () -> template.count(query.skip(0).limit(0), Job.class));
-
-        log.info("Converting job page to jobSimple page...");
-        var jobSimplePage = new PageImpl<JobSimple>(
-                jobPage.getContent().stream().map(JobSimple::new).toList(),
-                pageRequest,
-                jobPage.getTotalElements());
+        List<JobSimple> aggregationResult = template.aggregate(aggregation, "job", JobSimple.class).getMappedResults();
+        long totalPageCount = template.count(query.limit(0).skip(0), Job.class ); //TODO: This makes the code highly ineffcient. Also incompatible with match operations.
+        var jobSimplePage = new PageImpl<JobSimple>(aggregationResult, pageRequest, totalPageCount);
 
         log.info("Returning page...");
         return jobSimplePage;
