@@ -1,4 +1,5 @@
 package com.web.backend.controllers;
+//Service creation - Home cleaning control class
 import com.web.backend.model.HomeCleaning;
 import com.web.backend.repositories.ScHcRepo;
 import com.web.backend.services.HcSqGenarator;

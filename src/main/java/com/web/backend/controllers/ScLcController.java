@@ -1,5 +1,5 @@
 package com.web.backend.controllers;
-
+//Service creation - Laundry service control class
 import com.web.backend.model.HomeCleaning;
 import com.web.backend.model.LaundryServices;
 import com.web.backend.repositories.ScLcRepo;
