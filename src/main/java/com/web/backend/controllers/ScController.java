@@ -1,4 +1,4 @@
-package com.web.backend.controllersr;
+package com.web.backend.controllers;
 
 import com.web.backend.model.SC;
 
