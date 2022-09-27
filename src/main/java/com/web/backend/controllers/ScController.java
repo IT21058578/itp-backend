@@ -1,5 +1,5 @@
 package com.web.backend.controllers;
-
+//Service deatils control class
 import com.web.backend.model.SC;
 
 import com.web.backend.repositories.ScRepository;
