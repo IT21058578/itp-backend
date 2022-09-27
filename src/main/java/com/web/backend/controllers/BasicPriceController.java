@@ -1,6 +1,6 @@
 package com.web.backend.controllers;
 import com.web.backend.model.BasicPriceOfServices;
-import com.web.backend.model.SC;
+
 import com.web.backend.repositories.BasicPriceRepository;
 import com.web.backend.services.SqGenarator;
 import org.springframework.beans.factory.annotation.Autowired;
