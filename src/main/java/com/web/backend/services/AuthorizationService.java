@@ -99,6 +99,7 @@ public class AuthorizationService {
         } else {
             log.info("Configuring user details...");
             existingUser.setPassword(password);
+            existingUser.setResetToken(UUID.randomUUID().toString());
         }
 
         log.info("Saving newly configured user...");
