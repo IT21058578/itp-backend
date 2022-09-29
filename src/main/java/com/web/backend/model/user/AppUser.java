@@ -13,7 +13,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-@Data @NoArgsConstructor @AllArgsConstructor
+@NoArgsConstructor @AllArgsConstructor
+@Data
 @Document(collection = "user")
 public class AppUser {
     @Id
@@ -25,22 +26,28 @@ public class AppUser {
     @Indexed(unique = true)
     private String email;
     private String password;
-    private UserType userKind;
+    private String authorizationToken; //For authorizing email;
+    private String resetToken; //For password reset;
+    private boolean isAuthorized;
+    private UserKind userKind;
     private LocalDate dateOfBirth;
     private LocalDateTime createdAt;
     private LocalDateTime lastLoggedAt;
     private List<String> permissions;
 
-    public AppUser(String firstName, String lastName, String address, String email, String password, UserType userKind, LocalDate dateOfBirth, LocalDateTime lastLoggedAt, List<String> permissions) {
+    public AppUser(String firstName, String lastName, String address, String email, String password, String authorizationToken, String resetToken, boolean isAuthorized, UserKind userKind, LocalDate dateOfBirth, LocalDateTime createdAt, LocalDateTime lastLoggedAt, List<String> permissions) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;
         this.email = email;
         this.password = password;
+        this.authorizationToken = authorizationToken;
+        this.resetToken = resetToken;
+        this.isAuthorized = isAuthorized;
         this.userKind = userKind;
         this.dateOfBirth = dateOfBirth;
-        this.createdAt = LocalDateTime.now();
-        this.lastLoggedAt = LocalDateTime.now();
+        this.createdAt = createdAt;
+        this.lastLoggedAt = lastLoggedAt;
         this.permissions = permissions;
     }
 }

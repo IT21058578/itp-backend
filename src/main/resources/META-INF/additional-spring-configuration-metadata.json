@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "frontend.url",
+      "type": "java.lang.String",
+      "description": "The domain name of the frontend associated with this api."
+  }
+] }
