@@ -1,5 +1,6 @@
 package com.web.backend.services;
 
+import com.web.backend.dto.ScheduleSearchSortParameters;
 import com.web.backend.exception.NotFoundException;
 import com.web.backend.model.job.Schedule;
 import com.web.backend.repositories.ScheduleRepository;
@@ -66,52 +67,52 @@ public class ScheduleService {
         repository.deleteById(id);
     }
 
-    public Page<Schedule> getScheduleListPageWithSearch(Integer pgSize, Integer pgNum, String searchSelect, String searchString, String dateSelect, LocalDate date, String startTimeSelect, LocalTime startTime, String endTimeSelect, LocalTime endTime, String showSelect, String sortDir, String sortCol) {
+    public Page<Schedule> getScheduleListPageWithSearch(ScheduleSearchSortParameters searchParams) {
         log.info("Building aggregation pipeline...");
-        var pageRequest = PageRequest.of(pgNum, pgSize);
+        var pageRequest = PageRequest.of(searchParams.getPgNum(), searchParams.getPgNum());
         var aggregationPipeline = new ArrayList<AggregationOperation>();
 
         log.info("Modifying pipeline according to search params...");
-        switch(showSelect) {
+        switch(searchParams.getShowSelect()) {
             case "active" -> aggregationPipeline.add(Aggregation.match(Criteria.where("isActive").is(true)));
             case "inActive" -> aggregationPipeline.add(Aggregation.match(Criteria.where("isActive").is(false)));
         }
 
-        switch(searchSelect) {
-            case "title" -> aggregationPipeline.add(Aggregation.match(Criteria.where("title").regex(searchString)));
-            case "desc" -> aggregationPipeline.add(Aggregation.match(Criteria.where("description").regex(searchString)));
+        switch(searchParams.getSearchSelect()) {
+            case "title" -> aggregationPipeline.add(Aggregation.match(Criteria.where("title").regex(searchParams.getSearchString(), "i")));
+            case "desc" -> aggregationPipeline.add(Aggregation.match(Criteria.where("description").regex(searchParams.getSearchString(), "i")));
             case "both" -> {}
         }
 
-        switch(dateSelect) {
-            case "after" -> aggregationPipeline.add(Aggregation.match(Criteria.where("date").gt(date)));
-            case "before" -> aggregationPipeline.add(Aggregation.match(Criteria.where("date").lt(date)));
-            case "on" -> aggregationPipeline.add(Aggregation.match(Criteria.where("date").is(date)));
+        switch(searchParams.getDateSelect()) {
+            case "after" -> aggregationPipeline.add(Aggregation.match(Criteria.where("date").gt(searchParams.getDate())));
+            case "before" -> aggregationPipeline.add(Aggregation.match(Criteria.where("date").lt(searchParams.getDate())));
+            case "on" -> aggregationPipeline.add(Aggregation.match(Criteria.where("date").is(searchParams.getDate())));
         }
 
-        switch(startTimeSelect) {
-            case "after" -> aggregationPipeline.add(Aggregation.match(Criteria.where("startTime").gt(startTime)));
-            case "before" -> aggregationPipeline.add(Aggregation.match(Criteria.where("startTime").lt(startTime)));
-            case "on" -> aggregationPipeline.add(Aggregation.match(Criteria.where("startTime").is(startTime)));
+        switch(searchParams.getStartTimeSelect()) {
+            case "after" -> aggregationPipeline.add(Aggregation.match(Criteria.where("startTime").gt(searchParams.getStartTime())));
+            case "before" -> aggregationPipeline.add(Aggregation.match(Criteria.where("startTime").lt(searchParams.getStartTime())));
+            case "on" -> aggregationPipeline.add(Aggregation.match(Criteria.where("startTime").is(searchParams.getStartTime())));
         }
 
-        switch(endTimeSelect) {
-            case "after" -> aggregationPipeline.add(Aggregation.match(Criteria.where("endTime").gt(endTime)));
-            case "before" -> aggregationPipeline.add(Aggregation.match(Criteria.where("endTime").lt(endTime)));
-            case "on" -> aggregationPipeline.add(Aggregation.match(Criteria.where("endTime").is(endTime)));
+        switch(searchParams.getEndTimeSelect()) {
+            case "after" -> aggregationPipeline.add(Aggregation.match(Criteria.where("endTime").gt(searchParams.getEndTime())));
+            case "before" -> aggregationPipeline.add(Aggregation.match(Criteria.where("endTime").lt(searchParams.getEndTime())));
+            case "on" -> aggregationPipeline.add(Aggregation.match(Criteria.where("endTime").is(searchParams.getEndTime())));
         }
 
         log.info("Modifying pipeline according to sort params...");
-        if (!sortCol.isBlank()) {
-            switch (sortDir) {
-                case "asc" -> aggregationPipeline.add(Aggregation.sort(Sort.Direction.ASC, sortCol));
-                case "desc" -> aggregationPipeline.add(Aggregation.sort(Sort.Direction.DESC, sortCol));
+        if (!searchParams.getSortCol().isBlank()) {
+            switch (searchParams.getSortDir()) {
+                case "asc" -> aggregationPipeline.add(Aggregation.sort(Sort.Direction.ASC, searchParams.getSortCol()));
+                case "desc" -> aggregationPipeline.add(Aggregation.sort(Sort.Direction.DESC, searchParams.getSortCol()));
             }
         }
 
         log.info("Limiting query according to page params...");
-        aggregationPipeline.add(Aggregation.skip(pgSize * pgNum));
-        aggregationPipeline.add(Aggregation.limit(pgSize));
+        aggregationPipeline.add(Aggregation.skip(searchParams.getPgSize() * searchParams.getPgNum()));
+        aggregationPipeline.add(Aggregation.limit(searchParams.getPgSize()));
 
         log.info("Finalizing pipeline...");
         var aggregation = Aggregation.newAggregation(aggregationPipeline);
