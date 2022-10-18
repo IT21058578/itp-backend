@@ -1,2 +1,4 @@
-package com.web.backend.services;public class RatingService {
+package com.web.backend.services;
+
+public class RatingService {
 }

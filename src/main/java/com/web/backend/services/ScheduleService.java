@@ -49,7 +49,7 @@ public class ScheduleService {
     }
 
     public void postSchedule(Schedule schedule) {
-        log.info("Creating new employee with details: {} ...", schedule);
+        log.info("Creating new schedule with details: {} ...", schedule);
         repository.save(schedule);
     }
 

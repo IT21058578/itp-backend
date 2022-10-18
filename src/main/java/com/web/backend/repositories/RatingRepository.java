@@ -1,2 +1,4 @@
-package com.web.backend.repositories;public interface RatingRepository {
+package com.web.backend.repositories;
+
+public interface RatingRepository {
 }

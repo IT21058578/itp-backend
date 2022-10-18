@@ -31,9 +31,6 @@ public class ScheduleController {
     @PostMapping(value = "/search")
     public ResponseEntity<Page<Schedule>> getScheduleListPageWithSearch(@RequestBody ScheduleSearchSortParameters searchParams) {
         log.info("ScheduleController received GET request with params {pgSize, pgNum} and others");
-        //LocalDate localDate = LocalDate.parse(date);
-        //LocalTime localStartTime = LocalTime.parse(startTime, DateTimeFormatter.ofPattern("HH:mm")) ;
-        //LocalTime localEndTime = LocalTime.parse(endTime, DateTimeFormatter.ofPattern("HH:mm"));
         return ResponseEntity.ok(service.getScheduleListPageWithSearch(searchParams));
     }
 
