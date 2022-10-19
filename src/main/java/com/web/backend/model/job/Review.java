@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Data @NoArgsConstructor @AllArgsConstructor
 public class Review {
+    private String title;
     private String desc;
     private float rating;
 }

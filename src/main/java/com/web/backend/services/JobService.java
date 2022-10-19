@@ -1,6 +1,7 @@
 package com.web.backend.services;
 
 import com.web.backend.dto.JobDayStat;
+import com.web.backend.dto.JobSearchSortParameters;
 import com.web.backend.dto.JobSimple;
 import com.web.backend.exception.NotFoundException;
 import com.web.backend.model.job.Job;
@@ -57,10 +58,10 @@ public class JobService {
         return jobListsPerDay.stream().map(JobDayStat::new).toList();
     }
 
-    public Page<JobSimple> getJobList(int pgNum, int pgSize, String jobId, String lengthSelect, Integer length, String crewSelect, Integer crew, String revenueSelect, Double revenue, String ratingSelect, Double rating, String sortCol, String sortDir) {
+    public Page<JobSimple> getJobList(JobSearchSortParameters searchParams) {
         //Making aggregation pipeline.
         log.info("Building aggregation pipeline...");
-        var pageRequest = PageRequest.of(pgNum, pgSize);
+        var pageRequest = PageRequest.of(searchParams.getPgNum(), searchParams.getPgSize());
         var aggregationPipeline = new ArrayList<AggregationOperation>();
         aggregationPipeline.add(Aggregation.project()
                         .andExpression("{$toString : {$getField : {$literal: '_id'}}}").as("tempId") //NECESSARY TO DO ID SEARCHING. WE DO NOT KEEP THIS FIELD IN JOB SIMPLE CLASS THOUGH
@@ -71,36 +72,36 @@ public class JobService {
                         .andExpression("{$getField : { field : {$literal: 'rating'}, input: '$review'}}").as("rating"));
 
         log.info("Modifying pipeline according to searching parameters...");
-        if (!jobId.isBlank()) {
-            aggregationPipeline.add(Aggregation.match(Criteria.where("tempId").regex(jobId)));
+        if (!searchParams.getJobId().isBlank()) {
+            aggregationPipeline.add(Aggregation.match(Criteria.where("tempId").regex(searchParams.getJobId())));
         }
 
-        switch (lengthSelect) {
-            case "lessThan" -> aggregationPipeline.add(Aggregation.match(Criteria.where("hoursWorked").lt(length)));
-            case "greaterThan" -> aggregationPipeline.add(Aggregation.match(Criteria.where("hoursWorked").gt(length)));
-            case "equal" -> aggregationPipeline.add(Aggregation.match(Criteria.where("hoursWorked").is(length)));
+        switch (searchParams.getLengthSelect()) {
+            case "lessThan" -> aggregationPipeline.add(Aggregation.match(Criteria.where("hoursWorked").lt(searchParams.getLength())));
+            case "greaterThan" -> aggregationPipeline.add(Aggregation.match(Criteria.where("hoursWorked").gt(searchParams.getLength())));
+            case "equal" -> aggregationPipeline.add(Aggregation.match(Criteria.where("hoursWorked").is(searchParams.getLength())));
         }
-        switch (crewSelect) {
-            case "lessThan" -> aggregationPipeline.add(Aggregation.match(Criteria.where("crewDeployed").lt(crew)));
-            case "greaterThan" -> aggregationPipeline.add(Aggregation.match(Criteria.where("crewDeployed").gt(crew)));
-            case "equal" -> aggregationPipeline.add(Aggregation.match(Criteria.where("crewDeployed").is(crew)));
+        switch (searchParams.getCrewSelect()) {
+            case "lessThan" -> aggregationPipeline.add(Aggregation.match(Criteria.where("crewDeployed").lt(searchParams.getCrew())));
+            case "greaterThan" -> aggregationPipeline.add(Aggregation.match(Criteria.where("crewDeployed").gt(searchParams.getCrew())));
+            case "equal" -> aggregationPipeline.add(Aggregation.match(Criteria.where("crewDeployed").is(searchParams.getCrew())));
         }
-        switch (revenueSelect) {
-            case "lessThan" -> aggregationPipeline.add(Aggregation.match(Criteria.where("earnings").lt(revenue)));
-            case "greaterThan" -> aggregationPipeline.add(Aggregation.match(Criteria.where("earnings").gt(revenue)));
-            case "equal" -> aggregationPipeline.add(Aggregation.match(Criteria.where("earnings").is(revenue)));
+        switch (searchParams.getRevenueSelect()) {
+            case "lessThan" -> aggregationPipeline.add(Aggregation.match(Criteria.where("earnings").lt(searchParams.getRevenue())));
+            case "greaterThan" -> aggregationPipeline.add(Aggregation.match(Criteria.where("earnings").gt(searchParams.getRevenue())));
+            case "equal" -> aggregationPipeline.add(Aggregation.match(Criteria.where("earnings").is(searchParams.getRevenue())));
         }
-        switch (ratingSelect) {
-            case "lessThan" -> aggregationPipeline.add(Aggregation.match(Criteria.where("rating").lt(rating)));
-            case "greaterThan" -> aggregationPipeline.add(Aggregation.match(Criteria.where("rating").gt(rating)));
-            case "equal" -> aggregationPipeline.add(Aggregation.match(Criteria.where("rating").is(rating)));
+        switch (searchParams.getRatingSelect()) {
+            case "lessThan" -> aggregationPipeline.add(Aggregation.match(Criteria.where("rating").lt(searchParams.getRating())));
+            case "greaterThan" -> aggregationPipeline.add(Aggregation.match(Criteria.where("rating").gt(searchParams.getRating())));
+            case "equal" -> aggregationPipeline.add(Aggregation.match(Criteria.where("rating").is(searchParams.getRating())));
         }
 
         log.info("Modifying pipeline according to sorting parameters...");
-        if(sortCol != null && !sortCol.isBlank()) {
-            switch (sortDir) {
-                case "asc" -> aggregationPipeline.add(Aggregation.sort(Sort.Direction.ASC, sortCol));
-                case "desc" -> aggregationPipeline.add(Aggregation.sort(Sort.Direction.DESC, sortCol));
+        if(!searchParams.getSortCol().isBlank()) {
+            switch (searchParams.getSortDir()) {
+                case "asc" -> aggregationPipeline.add(Aggregation.sort(Sort.Direction.ASC, searchParams.getSortCol()));
+                case "desc" -> aggregationPipeline.add(Aggregation.sort(Sort.Direction.DESC, searchParams.getSortCol()));
             }
         }
 
@@ -114,7 +115,7 @@ public class JobService {
         log.info("Creating the job simple page...");
         var query = new Query().with(pageRequest);
         List<JobSimple> aggregationResult = template.aggregate(aggregation, "job", JobSimple.class).getMappedResults();
-        long totalPageCount = template.count(query.limit(0).skip(0), Job.class ); //TODO: This makes the code highly ineffcient. Also incompatible with match operations.
+        long totalPageCount = template.count(query.limit(0).skip(0), Job.class ); //TODO: This makes the code highly inefficient. Also incompatible with match operations.
         var jobSimplePage = new PageImpl<JobSimple>(aggregationResult, pageRequest, totalPageCount);
 
         log.info("Returning page...");
