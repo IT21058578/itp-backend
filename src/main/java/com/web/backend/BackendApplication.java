@@ -31,23 +31,29 @@ public class BackendApplication {
 		SpringApplication.run(BackendApplication.class, args);
 	}
 
-	@Bean
-	public CommandLineRunner CommandLineRunnerBean() {
-	return (args) -> {
-		Faker faker = new Faker();
-
-		for (int i = 0; i < 100; i++) {
-			String title = faker.book().title();
-			String description = faker.shakespeare().hamletQuote();
-			LocalDate date = faker.date().future(100, TimeUnit.DAYS).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-			LocalTime startTime = faker.date().future(100, TimeUnit.DAYS).toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
-			LocalTime endTime = faker.date().future(100, TimeUnit.DAYS).toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
-			boolean isActive = faker.random().nextBoolean();
-
-			Schedule schedule = new Schedule(title, date, startTime, endTime, description, isActive);
-			scheduleRepository.save(schedule);
-		}
-	};}
+	////@Bean
+	////public CommandLineRunner CommandLineRunnerBean() {
+	////return (args) -> {
+	////	Faker faker = new Faker();
+////
+	////	for (int i = 0; i < 100; i++) {
+	////		String title = faker.book().title();
+	////		String description = faker.shakespeare().hamletQuote();
+	////		LocalDate date =
+		//				faker.date().future(100, TimeUnit.DAYS).toInstant().atZone(ZoneId.systemDefault())
+	//				.toLocalDate();
+	////		LocalTime startTime =
+		//				faker.date().future(100, TimeUnit.DAYS).toInstant().atZone(ZoneId.systemDefault())
+	//				.toLocalTime();
+	////		LocalTime endTime =
+		//				faker.date().future(100, TimeUnit.DAYS).toInstant().atZone(ZoneId.systemDefault())
+	//				.toLocalTime();
+	////		boolean isActive = faker.random().nextBoolean();
+////
+	////		Schedule schedule = new Schedule(title, date, startTime, endTime, description, isActive);
+	////		scheduleRepository.save(schedule);
+	////	}
+	////};}
 
 
 //	public CommandLineRunner CommandLineRunnerBean() {
