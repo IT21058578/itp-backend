@@ -145,4 +145,12 @@ public class JobService {
         log.info("Deleting job...");
         repo.deleteById(jobId);
     }
+
+    public Page<Job> getClientCompletedJobsList(String id) {
+        return null;
+    }
+
+    public Page<Job> getClientFutureJobsList(String id) {
+        return null;
+    }
 }

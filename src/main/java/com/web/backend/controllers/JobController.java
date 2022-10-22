@@ -32,6 +32,20 @@ public class JobController {
         return ResponseEntity.ok().body(jobSimplePage);
     }
 
+    @GetMapping(params = {"userId"}, value = "/completed")
+    public ResponseEntity<Page<Job>> getClientCompletedJobsList(@RequestParam String id) {
+        log.info("JobController received GET Request with params {userId} for completed");
+        var jobSimplePage = jobService.getClientCompletedJobsList(id);
+        return ResponseEntity.ok().body(jobSimplePage);
+    }
+
+    @GetMapping(params = {"userId"}, value = "/future")
+    public ResponseEntity<Page<Job>> getClientFutureJobsList(@RequestParam String id) {
+        log.info("JobController received GET Request with params {userId} for future");
+        var jobSimplePage = jobService.getClientFutureJobsList(id);
+        return ResponseEntity.ok().body(jobSimplePage);
+    }
+
     @GetMapping(params = {"jobId"})
     public ResponseEntity<Job> getJobDetails(@RequestParam String jobId) {
         log.info("JobController received GET Request with params {jobId}");

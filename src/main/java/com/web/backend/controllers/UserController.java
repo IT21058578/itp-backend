@@ -17,19 +17,4 @@ public class UserController {
         log.info("UserController received GET Request with userId : {}", userId);
         return ResponseEntity.ok(userService.getUser(userId));
     }
-
-    @DeleteMapping
-    public ResponseEntity<?> deleteUser(@RequestParam String userId) {
-        log.info("UserController received DELETE Request with userId : {}", userId);
-        userService.deleteUser(userId); //Only disabled them
-        return ResponseEntity.ok().build();
-    }
-
-    @PutMapping
-    //TODO: Turn AppUser into a user object with only shit that can be changed
-    public ResponseEntity<?> editUser(@RequestParam String userId, @RequestBody AppUser user) {
-        log.info("UserController received PUT Request with userId : {} , and Review : {}", userId, user);
-        userService.editUser(userId, user);
-        return ResponseEntity.ok().build();
-    }
 }
