@@ -1,0 +1,48 @@
+[
+    {
+        "email": "bg15407@gmail.com",
+        "firstName": "Gayan",
+        "lastName": "Kalinga",
+        "address": "No 3, Horana",
+        "services": [
+        { "name": "Apartment Cleaning",
+            "imgUrl": "../images/two.jpg",
+            "desc": "short description about Apartment Cleaning",
+            "basicPrice": 5000
+        },
+        { "name": "Laundry Cleaning",
+            "imgUrl": "../images/two.jpg",
+            "desc": "short description about laundry Cleaning",
+            "basicPrice": 15000
+        },
+        { "name": "Office Cleaning",
+            "imgUrl": "../images/two.jpg",
+            "desc": "short description about office Cleaning",
+            "basicPrice": 7000
+        }
+    ],
+        "invoiceDate": "2022-10-22",
+        "paymentStatus": false
+    },
+
+    {
+        "email": "bg15407@gmail.com",
+        "firstName": "Gayan",
+        "lastName": "Kalinga",
+        "address": "No 3, Horana",
+        "services": [
+            { "name": "Apartment Cleaning",
+                "imgUrl": "../images/two.jpg",
+                "desc": "short description about Apartment Cleaning",
+                "basicPrice": 8000
+            },
+            { "name": "Office Cleaning",
+                "imgUrl": "../images/two.jpg",
+                "desc": "short description about office Cleaning",
+                "basicPrice": 9000
+            }
+        ],
+        "invoiceDate": "2022-10-23",
+        "paymentStatus": false
+    }
+]

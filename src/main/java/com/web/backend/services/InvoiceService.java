@@ -1,7 +1,10 @@
 package com.web.backend.services;
 
 import com.web.backend.model.payment.Invoice;
-import com.web.backend.repositories.InvoiceRepository;
+import com.web.backend.repositories.payment.InvoiceRepository;
+import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,21 +18,42 @@ public class InvoiceService {
         this.invoiceRepository = invoiceRepository;
     }
 
-    //Read
-    public Iterable<Invoice> getAllInvoice(){
+    //Read all Invoices
+    public Iterable<Invoice> getAllInvoice() {
         return invoiceRepository.findAll();
     }
 
-    public Invoice findInvoiceById(String id){
+    //Return Invoice from ID
+    public Invoice findInvoiceById(String id) {
         return invoiceRepository.findInvoiceById(id);
     }
 
-    //Save or Update
-    public Invoice saveOrUpdateInvoice(Invoice invoice){
-        return invoiceRepository.save(invoice);
+    //Return Invoices based on the email.
+    public List<Invoice> findInvoiceByEmail(String email) {
+        return invoiceRepository.findInvoiceByEmail(email);
     }
+
+    //Create New Invoice
+    public void addNewInvoice(Invoice invoice) {
+        invoiceRepository.save(invoice);
+    }
+
     //Delete
-    public void deleteInvoiceById(String id){
+    public void deleteInvoiceById(String id) {
         invoiceRepository.deleteById(id);
+    }
+
+    //Update
+    public ResponseEntity<Invoice> updateInvoice(String id, Invoice invoice) {
+        Optional<Invoice> invoiceOptional = invoiceRepository.findById(id);
+
+        if (invoiceOptional.isPresent()) {
+            Invoice _invoice = invoiceOptional.get();
+            _invoice.setPaymentStatus(invoice.isPaymentStatus());
+
+            return new ResponseEntity<>(invoiceRepository.save(_invoice), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }
