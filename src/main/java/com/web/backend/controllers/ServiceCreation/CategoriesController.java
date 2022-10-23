@@ -232,7 +232,7 @@ public class CategoriesController {
                 });
     }
     //------------------office cleaning--------------------
-    @PostMapping("/office")
+    @PostMapping("/Office")
     public String saveOfficeC (@RequestBody OfficeCleaningModel Oc){
         Oc.setId(serviceSq.getSequenceNumber(OfficeCleaningModel.SEQUENCE_NAME));
         officeRepo.save(Oc);
