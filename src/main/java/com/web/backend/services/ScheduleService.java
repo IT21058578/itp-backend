@@ -1,6 +1,6 @@
 package com.web.backend.services;
 
-import com.web.backend.dto.ScheduleSearchSortParameters;
+import com.web.backend.dto.schedManagement.ScheduleSearchSortParameters;
 import com.web.backend.exception.NotFoundException;
 import com.web.backend.model.job.Schedule;
 import com.web.backend.repositories.ScheduleRepository;
@@ -18,8 +18,6 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 

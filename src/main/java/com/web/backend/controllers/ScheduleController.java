@@ -1,6 +1,6 @@
 package com.web.backend.controllers;
 
-import com.web.backend.dto.ScheduleSearchSortParameters;
+import com.web.backend.dto.schedManagement.ScheduleSearchSortParameters;
 import com.web.backend.model.job.Schedule;
 import com.web.backend.services.ScheduleService;
 import lombok.AllArgsConstructor;

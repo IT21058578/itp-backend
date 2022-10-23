@@ -11,9 +11,9 @@ import org.springframework.stereotype.Service;
 public class UserService {
     private final UserRepository repo;
 
-    public AppUser getUser(String userId) {
-        log.info("Getting details of user with id : {}", userId);
-        return repo.findById(userId).orElseThrow(NotFoundException::new);
+    public AppUser getUser(String email) {
+        log.info("Getting details of user with email : {}", email);
+        return repo.findByEmail(email).orElseThrow(NotFoundException::new);
     }
 
     public void deleteUser(String userId) {

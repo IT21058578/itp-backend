@@ -1,10 +1,9 @@
 package com.web.backend.services;
 
-import com.web.backend.dto.JobDayStat;
-import com.web.backend.dto.JobSearchSortParameters;
-import com.web.backend.dto.JobSimple;
+import com.web.backend.dto.schedManagement.Calender;
+import com.web.backend.dto.schedManagement.JobSearchSortParameters;
+import com.web.backend.dto.schedManagement.JobSimple;
 import com.web.backend.exception.NotFoundException;
-import com.web.backend.model.job.Job;
 import com.web.backend.repositories.JobRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +28,7 @@ public class JobService {
     private final MongoTemplate template;
     private final JobRepository repo;
 
-    public List<JobDayStat> getJobCalender(Integer month, Integer year) {
+    public List<Calender> getJobCalender(Integer month, Integer year) {
         //Defining start and end dateTime.
         log.info("Preparing startDateTime and endDateTime...");
         var startDateTime = LocalDateTime.of(
@@ -53,9 +52,9 @@ public class JobService {
         log.info("Length of jobListsPerDay is {} ", jobListsPerDay.size());
         jobList.forEach(job -> jobListsPerDay.get(job.getStartTime().getDayOfMonth() - 1).add(job));
 
-        //JobDayStat list is created according to received data and returned.
+        //Calender list is created according to received data and returned.
         log.info("Returning list...");
-        return jobListsPerDay.stream().map(JobDayStat::new).toList();
+        return jobListsPerDay.stream().map(Calender::new).toList();
     }
 
     public Page<JobSimple> getJobList(JobSearchSortParameters searchParams) {
@@ -122,8 +121,9 @@ public class JobService {
         return jobSimplePage;
     }
 
-    public Job getJobDetails(String jobId) {
+    public Job getJobPageDetails(String jobId) {
         log.info("Getting details of job with id : {}", jobId);
+        //TODO: Get all relevant info and create job page.
         return repo.findById(jobId).orElseThrow(NotFoundException::new);
     }
 

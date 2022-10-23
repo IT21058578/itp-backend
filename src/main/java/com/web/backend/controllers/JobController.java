@@ -1,9 +1,8 @@
 package com.web.backend.controllers;
 
-import com.web.backend.dto.JobDayStat;
-import com.web.backend.dto.JobSearchSortParameters;
-import com.web.backend.dto.JobSimple;
-import com.web.backend.model.job.Job;
+import com.web.backend.dto.schedManagement.Calender;
+import com.web.backend.dto.schedManagement.JobSearchSortParameters;
+import com.web.backend.dto.schedManagement.JobSimple;
 import com.web.backend.services.JobService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +18,7 @@ public class JobController {
     private final JobService jobService;
 
     @GetMapping(params = {"month", "year"})
-    public ResponseEntity<List<JobDayStat>> getJobCalender(@RequestParam Integer month, @RequestParam Integer year) {
+    public ResponseEntity<List<Calender>> getJobCalender(@RequestParam Integer month, @RequestParam Integer year) {
         log.info("JobController received GET Request with params {month, year}");
         var jobCalenderList = jobService.getJobCalender(month, year);
         return ResponseEntity.ok().body(jobCalenderList);
@@ -47,9 +46,9 @@ public class JobController {
     }
 
     @GetMapping(params = {"jobId"})
-    public ResponseEntity<Job> getJobDetails(@RequestParam String jobId) {
+    public ResponseEntity<Job> getJobPageDetails(@RequestParam String jobId) {
         log.info("JobController received GET Request with params {jobId}");
-        return ResponseEntity.ok().body(jobService.getJobDetails(jobId));
+        return ResponseEntity.ok().body(jobService.getJobPageDetails(jobId));
     }
 
     @PutMapping

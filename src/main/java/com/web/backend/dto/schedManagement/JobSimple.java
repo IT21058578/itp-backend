@@ -1,16 +1,11 @@
-package com.web.backend.dto;
+package com.web.backend.dto.schedManagement;
 
-import com.web.backend.model.job.Job;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.List;
 
 @AllArgsConstructor @Data
 @NoArgsConstructor

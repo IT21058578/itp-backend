@@ -1,6 +1,5 @@
-package com.web.backend.dto;
+package com.web.backend.dto.schedManagement;
 
-import com.web.backend.model.job.Job;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,7 +9,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Data @AllArgsConstructor @NoArgsConstructor
-public class JobDayStat {
+public class Calender {
     private int jobsWorked;
     private int crewDeployed;
     private long hoursWorked;
@@ -18,7 +17,7 @@ public class JobDayStat {
     private double earnings;
     private LocalDate day;
 
-    public JobDayStat(List<Job> jobs) {
+    public Calender(List<Job> jobs) {
         int jobsWorked = 0;
         int crewDeployed = 0;
         long hoursWorked = 0;

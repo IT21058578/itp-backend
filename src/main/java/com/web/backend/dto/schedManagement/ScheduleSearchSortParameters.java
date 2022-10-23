@@ -1,4 +1,4 @@
-package com.web.backend.dto;
+package com.web.backend.dto.schedManagement;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
