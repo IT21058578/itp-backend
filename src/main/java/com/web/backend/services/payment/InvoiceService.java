@@ -1,4 +1,4 @@
-package com.web.backend.services;
+package com.web.backend.services.payment;
 
 import com.web.backend.model.payment.Invoice;
 import com.web.backend.repositories.payment.InvoiceRepository;

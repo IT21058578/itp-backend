@@ -18,6 +18,18 @@ public class Instrument {
     private String cardNumber;
     private String cardType;
     private String cvv;
-    private LocalDate expiryDate;
+    private String expiryDate;
 
+    public Instrument(
+            String email,
+            String cardNumber,
+            String cardType,
+            String cvv,
+            String expiryDate) {
+        this.email = email;
+        this.cardNumber = cardNumber;
+        this.cardType = cardType;
+        this.cvv = cvv;
+        this.expiryDate = expiryDate;
+    }
 }

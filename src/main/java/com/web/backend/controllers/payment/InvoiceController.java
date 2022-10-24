@@ -1,7 +1,7 @@
 package com.web.backend.controllers.payment;
 
 import com.web.backend.model.payment.Invoice;
-import com.web.backend.services.InvoiceService;
+import com.web.backend.services.payment.InvoiceService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
