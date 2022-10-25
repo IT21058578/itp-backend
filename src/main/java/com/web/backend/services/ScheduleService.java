@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service @AllArgsConstructor @Slf4j
+
 public class ScheduleService {
     private final MongoTemplate template;
     private final ScheduleRepository repository;
