@@ -5,13 +5,18 @@ import com.web.backend.dto.ClientSimple;
 import com.web.backend.dto.EmployeeSimple;
 import com.web.backend.model.job.*;
 import com.web.backend.model.jobService.Service;
+import com.web.backend.model.user.Admin;
+import com.web.backend.model.user.AppUser;
+import com.web.backend.model.user.UserType;
 import com.web.backend.repositories.JobRepository;
 import com.web.backend.repositories.ScheduleRepository;
+import com.web.backend.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cglib.core.Local;
 import org.springframework.context.annotation.Bean;
 
 import java.time.LocalDate;
@@ -26,130 +31,96 @@ import java.util.concurrent.TimeUnit;
 public class BackendApplication {
 	private final JobRepository jobRepository;
 	private final ScheduleRepository scheduleRepository;
+	private final UserRepository userRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(BackendApplication.class, args);
 	}
 
-	////@Bean
-	////public CommandLineRunner CommandLineRunnerBean() {
-	////return (args) -> {
-	////	Faker faker = new Faker();
-////
-	////	for (int i = 0; i < 100; i++) {
-	////		String title = faker.book().title();
-	////		String description = faker.shakespeare().hamletQuote();
-	////		LocalDate date =
-		//				faker.date().future(100, TimeUnit.DAYS).toInstant().atZone(ZoneId.systemDefault())
-	//				.toLocalDate();
-	////		LocalTime startTime =
-		//				faker.date().future(100, TimeUnit.DAYS).toInstant().atZone(ZoneId.systemDefault())
-	//				.toLocalTime();
-	////		LocalTime endTime =
-		//				faker.date().future(100, TimeUnit.DAYS).toInstant().atZone(ZoneId.systemDefault())
-	//				.toLocalTime();
-	////		boolean isActive = faker.random().nextBoolean();
-////
-	////		Schedule schedule = new Schedule(title, date, startTime, endTime, description, isActive);
-	////		scheduleRepository.save(schedule);
-	////	}
-	////};}
-
-
+	//@Bean
 //	public CommandLineRunner CommandLineRunnerBean() {
 //		return (args) -> {
-//			Faker faker = new Faker();
-//
+//			log.info("Deleting all jobs");
 //			jobRepository.deleteAll();
-//			for (int i = 0; i < 200; i++) {
-//				String createdBy = faker.idNumber().valid();
-//				String lastUpdatedBy = faker.idNumber().valid();
-//				Review review = new Review(faker.shakespeare().hamletQuote(),
-//						(float) faker.random().nextDouble());
-//				Service service = new Service();
-//				Invoice invoice = new Invoice(LocalDateTime.now(), LocalDateTime.now(),
-//						faker.random().nextDouble(), faker.random().nextDouble(),
-//						faker.random().nextDouble(), faker.random().nextDouble());
-//				Payment payment = new Payment();
-//				ClientSimple client = new ClientSimple();
-//				LocalDateTime startTime = faker.date().future(100, TimeUnit.DAYS)
-//						.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-//				LocalDateTime endTime = faker.date().future(100, TimeUnit.DAYS)
-//						.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-//				LocalDateTime createdAt = LocalDateTime.now();
-//				LocalDateTime lastUpdatedAt = LocalDateTime.now();
-//				List<EmployeeSimple> crew = new ArrayList<>();
+//			Faker faker = new Faker();
+//			for (int i = 0; i < 25; i++) {
+//				Job job = new Job();
+//				job.setZone("A");
+//				job.setAddress(faker.address().fullAddress());
+//				job.setPaymentId(faker.idNumber().valid());
+//				job.setInvoiceId(faker.idNumber().valid());
+//				job.setAmount(faker.number().numberBetween(1000, 10000));
+//				job.setDate(faker.date().future(365, TimeUnit.DAYS).toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+//				job.setStartTime(LocalDateTime.of(job.getDate(), faker.date().future(10, TimeUnit.HOURS).toInstant().atZone(ZoneId.systemDefault()).toLocalTime()));
+//				job.setEndTime(LocalDateTime.of(job.getDate(), faker.date().future(15, TimeUnit.HOURS).toInstant().atZone(ZoneId.systemDefault()).toLocalTime()));
+//				job.setCreatedAt(faker.date().past(365, TimeUnit.DAYS).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
 //
-//				do {
-//					EmployeeSimple employee = new EmployeeSimple(faker.idNumber().valid(),
-//							faker.name().firstName(), faker.name().lastName(), faker.job().title());
-//					crew.add(employee);
-//				} while (faker.random().nextBoolean());
+//				List<Job.JobCrewMemberSimple> crewList = new ArrayList<>();
+//				while (faker.bool().bool()) {
+//					crewList.add(new Job.JobCrewMemberSimple(
+//							faker.idNumber().valid(),
+//							faker.name().firstName(),
+//							faker.name().lastName()
+//					));
+//				}
+//				job.setCrewList(crewList);
 //
-//				Job job = new Job(createdBy, lastUpdatedBy,
-//						review, service, invoice, payment,
-//						client, startTime, endTime, createdAt,
-//						lastUpdatedAt, crew);
+//				List<Job.JobServiceSimple> serviceList = new ArrayList<>();
+//				while (faker.bool().bool()) {
+//					serviceList.add(new Job.JobServiceSimple(
+//							faker.idNumber().valid(),
+//							faker.app().name(),
+//							faker.number().numberBetween(100, 1000),
+//							faker.number().numberBetween(1, 5)
+//					));
+//				}
+//				job.setServiceList(serviceList);
 //
-//				log.info("Creating and saving new job : {} ", job);
+//				job.setClient(new Job.JobClientSimple(
+//						"bruh",
+//						"Tharindu",
+//						"Gunasekera",
+//						"gunasekeratharindu@gmail.com",
+//						"0773126991"
+//				));
+//
+//				if (faker.bool().bool()) {
+//					job.setReview(new Review(
+//							faker.superhero().name(), faker.shakespeare().asYouLikeItQuote(), (float) (faker.number().randomDouble(2, 0, 5))
+//					));
+//				}
+//
+//				log.info("Saving a new demo job...");
 //				jobRepository.save(job);
 //			}
-//			for (int i = 0; i < 100; i++) {
-//				String createdBy = faker.idNumber().valid();
-//				String lastUpdatedBy = faker.idNumber().valid();
-//				Review review = new Review(faker.shakespeare().hamletQuote(),
-//						(float) faker.random().nextDouble());
-//				Service service = new Service();
-//				ClientSimple client = new ClientSimple();
-//				LocalDateTime startTime = faker.date().future(100, TimeUnit.DAYS)
-//						.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-//				LocalDateTime endTime = faker.date().future(100, TimeUnit.DAYS)
-//						.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-//				LocalDateTime createdAt = LocalDateTime.now();
-//				LocalDateTime lastUpdatedAt = LocalDateTime.now();
-//				List<EmployeeSimple> crew = new ArrayList<>();
 //
-//				do {
-//					EmployeeSimple employee = new EmployeeSimple(faker.idNumber().valid(),
-//							faker.name().firstName(), faker.name().lastName(), faker.job().title());
-//					crew.add(employee);
-//				} while (faker.random().nextBoolean());
-//
-//				Job job = new Job(createdBy, lastUpdatedBy,
-//						review, service, null, null,
-//						client, startTime, endTime, createdAt,
-//						lastUpdatedAt, crew);
-//
-//				log.info("Creating and saving new job with invoice and payment : {} ", job);
-//				jobRepository.save(job);
-//			}
-//			for (int i = 0; i < 100; i++) {
-//				String createdBy = faker.idNumber().valid();
-//				String lastUpdatedBy = faker.idNumber().valid();
-//				Service service = new Service();
-//				ClientSimple client = new ClientSimple();
-//				LocalDateTime startTime = faker.date().future(100, TimeUnit.DAYS)
-//						.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-//				LocalDateTime endTime = faker.date().future(100, TimeUnit.DAYS)
-//						.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-//				LocalDateTime createdAt = LocalDateTime.now();
-//				LocalDateTime lastUpdatedAt = LocalDateTime.now();
-//				List<EmployeeSimple> crew = new ArrayList<>();
-//
-//				do {
-//					EmployeeSimple employee = new EmployeeSimple(faker.idNumber().valid(),
-//							faker.name().firstName(), faker.name().lastName(), faker.job().title());
-//					crew.add(employee);
-//				} while (faker.random().nextBoolean());
-//
-//				Job job = new Job(createdBy, lastUpdatedBy,
-//						null, service, null, null,
-//						client, startTime, endTime, createdAt,
-//						lastUpdatedAt, crew);
-//
-//				log.info("Creating and saving new job without invoice, review and payment : {} ", job);
-//				jobRepository.save(job);
-//			}
 //		};
 //	}
+
+//	@Bean
+//	public CommandLineRunner CommandLineRunnerBean() {
+//			return (args) -> {
+//				Faker faker = new Faker();
+//				scheduleRepository.deleteAll();
+//
+//				for (int i = 0; i < 30; i++) {
+//					String title = faker.book().title();
+//					String description = faker.shakespeare().hamletQuote();
+//					LocalDate date =
+//							faker.date().future(100, TimeUnit.DAYS).toInstant().atZone(ZoneId.systemDefault())
+//									.toLocalDate();
+//					LocalTime startTime =
+//							faker.date().future(100, TimeUnit.DAYS).toInstant().atZone(ZoneId.systemDefault())
+//									.toLocalTime();
+//					LocalTime endTime =
+//							faker.date().future(100, TimeUnit.DAYS).toInstant().atZone(ZoneId.systemDefault())
+//									.toLocalTime();
+//					boolean isActive = faker.random().nextBoolean();
+//
+//					Schedule schedule = new Schedule(title, date, startTime, endTime, description, isActive);
+//					scheduleRepository.save(schedule);
+//				}
+//			};
+//		}
+
 }

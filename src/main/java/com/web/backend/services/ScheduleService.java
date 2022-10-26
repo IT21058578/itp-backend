@@ -109,7 +109,7 @@ public class ScheduleService {
         }
 
         log.info("Limiting query according to page params...");
-        aggregationPipeline.add(Aggregation.skip(searchParams.getPgSize() * searchParams.getPgNum()));
+        aggregationPipeline.add(Aggregation.skip((searchParams.getPgNum() - 1) * searchParams.getPgSize()));
         aggregationPipeline.add(Aggregation.limit(searchParams.getPgSize()));
 
         log.info("Finalizing pipeline...");

@@ -51,8 +51,15 @@ public class AuthorizationService {
             throw new IllegalStateException("User is not authorized yet!");
         }
 
+        log.info("Check if password is correct...");
+        if(!existingUser.getPassword().equals(password)) {
+            log.warn("Wrong password given. Real pass is : {}", existingUser.getPassword());
+            throw new AlreadyExistsException("Password is incorrect!");
+        }
+
         log.info("Configuring user details...");
         existingUser.setLastLoggedAt(LocalDateTime.now());
+        repository.save(existingUser);
 
         log.info("Returning user...");
         return existingUser;

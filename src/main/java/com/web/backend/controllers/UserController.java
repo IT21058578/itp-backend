@@ -1,5 +1,6 @@
 package com.web.backend.controllers;
 
+import com.web.backend.dto.schedManagement.UserSearchSortParameters;
 import com.web.backend.services.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,8 +18,16 @@ public class UserController {
         return ResponseEntity.ok(userService.getUser(email));
     }
 
-    public ResponseEntity<?> changeUserRole(@RequestParam String email) {
+    @PostMapping(value="/search")
+    public ResponseEntity<?> getUserList(@RequestBody UserSearchSortParameters searchParams) {
+        log.info("UserController received POST request to search users");
+        return ResponseEntity.ok(userService.getUserList(searchParams));
+    }
+
+    @PutMapping(params={"email", "role"}, value="/role")
+    public ResponseEntity<?> changeUserRole(@RequestParam String email, @RequestParam String role) {
         log.info("UserController received GET Request with email : {}", email);
-        userService.changeUserRole(email);
+        userService.changeUserRole(email, role);
+        return ResponseEntity.ok().build();
     }
 }

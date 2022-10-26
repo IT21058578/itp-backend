@@ -1,14 +1,18 @@
 package com.web.backend.model.job;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
-@AllArgsConstructor @NoArgsConstructor
+@AllArgsConstructor @NoArgsConstructor @Data
 public class Job {
+    @Id
     private String id;
     private String zone;
     private String address;
@@ -16,28 +20,31 @@ public class Job {
     private String invoiceId;
     private float amount;
     private LocalDate date;
-    private LocalTime startTime;
-    private LocalTime endTime;
-    private LocalDate createdAt;
-    private List<CrewMemberSimple> crewList;
-    private List<ServiceSimple> serviceList;
-    private ClientSimple client;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
+    private LocalDateTime createdAt;
+    private List<JobCrewMemberSimple> crewList;
+    private List<JobServiceSimple> serviceList;
+    private JobClientSimple client;
     private Review review;
 
-    private class CrewMemberSimple {
+    @AllArgsConstructor @Data
+    public static class JobCrewMemberSimple {
         private String id;
         private String firstName;
         private String lastName;
     }
 
-    private class ServiceSimple {
+    @AllArgsConstructor @Data
+    public static class JobServiceSimple {
         private String id;
         private String name;
-        private String cost;
-        private String quantity;
+        private float cost;
+        private int quantity;
     }
 
-    private class ClientSimple {
+    @AllArgsConstructor @Data
+    public static class JobClientSimple {
         private String id;
         private String firstName;
         private String lastName;

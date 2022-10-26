@@ -2,6 +2,7 @@ package com.web.backend.services;
 
 import com.web.backend.exception.AlreadyExistsException;
 import com.web.backend.exception.NotFoundException;
+import com.web.backend.model.job.Job;
 import com.web.backend.model.job.Review;
 import com.web.backend.repositories.JobRepository;
 import lombok.AllArgsConstructor;
