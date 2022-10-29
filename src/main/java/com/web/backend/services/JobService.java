@@ -180,6 +180,7 @@ public class JobService {
 
     public Page<Job> getClientJobsList(UserJobSearchSortParameters searchParams) {
         //Making aggregation pipeline.
+        log.info("Received searchParams {}", searchParams);
         log.info("Building aggregation pipeline...");
         var pageRequest = PageRequest.of(searchParams.getPgNum(), searchParams.getPgSize());
         var aggregationPipeline = new ArrayList<AggregationOperation>();
@@ -199,7 +200,7 @@ public class JobService {
 
         if (searchParams.getPgNum() != null) {
             log.info("Limiting search according to page parameters...");
-            aggregationPipeline.add(Aggregation.skip(searchParams.getPgNum() * searchParams.getPgNum())); //TODO: Enable this once infinite scrolling is implemented.
+            aggregationPipeline.add(Aggregation.skip(searchParams.getPgSize() * (searchParams.getPgNum() - 1))); //TODO: Enable this once infinite scrolling is implemented.
             aggregationPipeline.add(Aggregation.limit(searchParams.getPgSize()));
         }
 
@@ -212,7 +213,7 @@ public class JobService {
         long totalPageCount = template.count(query.limit(0).skip(0), Job.class ); //TODO: This makes the code highly inefficient. Also incompatible with match operations.
         var jobPage = new PageImpl<>(aggregationResult, pageRequest, totalPageCount);
 
-        log.info("Returning page...");
+        log.info("Returning page..., Size of aggregationResult is {}", aggregationResult.size());
         return jobPage;
     }
 }

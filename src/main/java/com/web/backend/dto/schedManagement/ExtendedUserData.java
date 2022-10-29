@@ -18,6 +18,7 @@ public class ExtendedUserData {
     private String email;
     private String mobile;
     private String userType;
+    private boolean isEmailsAccepted;
     private int totalJobCount = 0;
     private int pendingJobCount = 0;
     private int completedJobCount = 0;
@@ -31,16 +32,19 @@ public class ExtendedUserData {
     private LocalDateTime lastLoggedAt;
 
     public ExtendedUserData(AppUser user, List<Job> jobList) {
+        //Getting user details
         this.id = user.getId();
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.email = user.getEmail();
-        //this.mobile = user.getMobile();
         this.userType = user.getPermissions().get(0);
         this.dateOfBirth = user.getDateOfBirth();
         this.createdAt = user.getCreatedAt();
         this.lastLoggedAt = user.getLastLoggedAt();
+        this.isEmailsAccepted = user.isEmailsAccepted();
+        this.mobile = user.getMobile();
 
+        //Getting job details
         this.totalJobCount = jobList.size();
         for (Job job: jobList) {
             if (job.getStartTime().isBefore(LocalDateTime.now())) { completedJobCount++; }

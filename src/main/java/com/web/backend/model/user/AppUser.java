@@ -27,6 +27,8 @@ public class AppUser {
     private String password;
     private String authorizationToken; //For authorizing email;
     private String resetToken; //For password reset;
+    private String mobile;
+    private boolean isEmailsAccepted;
     private boolean isAuthorized;
     private UserKind userKind;
     private LocalDate dateOfBirth;
@@ -34,19 +36,5 @@ public class AppUser {
     private LocalDateTime lastLoggedAt;
     private List<String> permissions;
 
-    public AppUser(String firstName, String lastName, String address, String email, String password, String authorizationToken, String resetToken, boolean isAuthorized, UserKind userKind, LocalDate dateOfBirth, LocalDateTime createdAt, LocalDateTime lastLoggedAt, List<String> permissions) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.address = address;
-        this.email = email;
-        this.password = password;
-        this.authorizationToken = authorizationToken;
-        this.resetToken = resetToken;
-        this.isAuthorized = isAuthorized;
-        this.userKind = userKind;
-        this.dateOfBirth = dateOfBirth;
-        this.createdAt = createdAt;
-        this.lastLoggedAt = lastLoggedAt;
-        this.permissions = permissions;
-    }
+
 }
