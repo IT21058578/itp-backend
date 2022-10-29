@@ -1,0 +1,37 @@
+[
+  {
+    "email": "bg15407@gmail.com",
+    "cardNumber": "4242424242424242",
+    "cardType": "visa",
+    "cvv": "300",
+    "expiryDate": "12/25"
+  },
+  {
+    "email": "bg15407@gmail.com",
+    "cardNumber": "5555555555554444",
+    "cardType": "master",
+    "cvv": "300",
+    "expiryDate": "12/25"
+  },
+  {
+    "email": "bg15407@gmail.com",
+    "cardNumber": "378282246310005",
+    "cardType": "amex",
+    "cvv": "300",
+    "expiryDate": "12/25"
+  },
+  {
+    "email": "bg15407@gmail.com",
+    "cardNumber": "6200000000000005",
+    "cardType": "union pay",
+    "cvv": "300",
+    "expiryDate": "12/25"
+  },
+  {
+    "email": "bg15407@gmail.com",
+    "cardNumber": "4000056655665556",
+    "cardType": "visa",
+    "cvv": "300",
+    "expiryDate": "12/25"
+  }
+]

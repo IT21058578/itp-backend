@@ -1,19 +1,26 @@
 package com.web.backend.model.payment;
 
 import com.web.backend.model.jobService.Service;
-import com.web.backend.model.user.AppUser;
-import com.web.backend.model.user.Client;
+import lombok.Data;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@Document(collection = "invoices")
+@Data
+@Document
 public class Invoice {
   @Id
   private String id;
-  private AppUser customer;
+  //customer details
+  @Indexed
+  private String email;
+  private String firstName;
+  private String lastName;
+  private String address;
+  //services related details.
   private List<Service> services;
   private LocalDate invoiceDate;
   private double invoiceTotal;
@@ -30,8 +37,19 @@ public class Invoice {
     return totalValue;
   }
 
-  public Invoice(AppUser customer, List<Service> services, LocalDate invoiceDate, boolean paymentStatus) {
-    this.customer = customer;
+  //constructor.
+  public Invoice(String email,
+                 String firstName,
+                 String lastName,
+                 String address,
+                 List<Service> services,
+                 LocalDate invoiceDate,
+                 boolean paymentStatus
+  ){
+    this.email = email;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.address = address;
     this.services = services;
     this.invoiceDate = invoiceDate;
     this.invoiceTotal = getTotal();
@@ -39,73 +57,9 @@ public class Invoice {
     this.invoiceExpireDate = invoiceDate.plusDays(7);
   }
 
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
-
-  public AppUser getCustomer() {
-    return customer;
-  }
-
-  public void setCustomer(AppUser customer) {
-    this.customer = customer;
-  }
-
-  public List<Service> getServices() {
-    return services;
-  }
-
-  public void setServices(List<Service> services) {
-    this.services = services;
-  }
-
-  public LocalDate getInvoiceDate() {
-    return invoiceDate;
-  }
-
-  public void setInvoiceDate(LocalDate invoiceDate) {
-    this.invoiceDate = invoiceDate;
-  }
-
-  public double getInvoiceTotal() {
-    return invoiceTotal;
-  }
-
-  public void setInvoiceTotal(double invoiceTotal) {
-    this.invoiceTotal = invoiceTotal;
-  }
-
   public boolean isPaymentStatus() {
     return paymentStatus;
   }
-
-  public void setPaymentStatus(boolean paymentStatus) {
-    this.paymentStatus = paymentStatus;
-  }
-
-  public LocalDate getInvoiceExpireDate() {
-    return invoiceExpireDate;
-  }
-
-  public void setInvoiceExpireDate(LocalDate invoiceExpireDate) {
-    this.invoiceExpireDate = invoiceExpireDate;
-  }
-
-  @Override
-  public String toString() {
-    return "Invoice{" +
-            "id='" + id + '\'' +
-            ", customer=" + customer +
-            ", services=" + services +
-            ", invoiceDate=" + invoiceDate +
-            ", invoiceTotal=" + invoiceTotal +
-            ", paymentStatus=" + paymentStatus +
-            ", invoiceExpireDate=" + invoiceExpireDate +
-            '}';
-  }
+  //TODO: setup the way to auto remove the invoices after 7 days.
 }
 

@@ -1,0 +1,16 @@
+[
+  {
+    "amount" : "27000",
+    "email": "bg15407@gmail.com",
+    "cardNumber": "4242424242424242",
+    "invoiceId": "63556930d2ca966ac6fa0def",
+    "paymentStatus": true
+  },
+  {
+  "amount" : "17000",
+  "email": "bg15407@gmail.com",
+  "cardNumber": "5555555555554444",
+  "invoiceId": "63568ed3c2fa530c2cc4b373",
+  "paymentStatus": false
+  }
+]

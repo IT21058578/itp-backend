@@ -1,5 +1,6 @@
 package com.web.backend.model.payment;
 
+
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -7,23 +8,27 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
 @Data
-public class Payment {
+public class Instrument {
     @Id
     private String id;
-    private Double amount;
     @Indexed
     private String email;
     @Indexed
     private String cardNumber;
-    @Indexed
-    private String invoiceId;
-    private boolean paymentStatus;
+    private String cardType;
+    private String cvv;
+    private String expiryDate;
 
-    public Payment(Double amount, String email, String cardNumber, String invoiceId, boolean paymentStatus) {
-        this.amount = amount;
+    public Instrument(
+            String email,
+            String cardNumber,
+            String cardType,
+            String cvv,
+            String expiryDate) {
         this.email = email;
         this.cardNumber = cardNumber;
-        this.invoiceId = invoiceId;
-        this.paymentStatus = paymentStatus;
+        this.cardType = cardType;
+        this.cvv = cvv;
+        this.expiryDate = expiryDate;
     }
 }
