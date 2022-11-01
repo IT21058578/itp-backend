@@ -1,5 +1,6 @@
 package com.web.backend.model.job;
 
+import com.web.backend.model.crewAssignment.Employee;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,7 +15,8 @@ import java.util.List;
 public class Job {
     @Id
     private String id;
-    private String zone;
+    private String zoneId;
+    private String zoneSign;
     private String address;
     private String paymentId;
     private String invoiceId;
@@ -33,6 +35,14 @@ public class Job {
         private String id;
         private String firstName;
         private String lastName;
+        private String jobTitle;
+
+        public JobCrewMemberSimple(Employee employee) {
+            this.id = employee.getId();
+            this.firstName = employee.getFirstName();
+            this.lastName = employee.getLastName();
+            this.jobTitle = employee.getJobTitle().toString();
+        }
     }
 
     @AllArgsConstructor @Data
