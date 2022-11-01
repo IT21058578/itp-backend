@@ -1,6 +1,5 @@
 package com.web.backend.controllers.product;
 
-import com.web.backend.dto.ScheduleSearchSortParameters;
 import com.web.backend.model.job.Schedule;
 import com.web.backend.model.product.product;
 import com.web.backend.services.ScheduleService;
