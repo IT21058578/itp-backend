@@ -1,5 +1,7 @@
 package com.web.backend.controllers.crewAssignment;
 
+import com.web.backend.dto.crewAssignment.ZoneEmployeeSearchSortParams;
+import com.web.backend.dto.crewAssignment.ZoneJobSearchSortParams;
 import com.web.backend.dto.crewAssignment.ZoneSearchSortParams;
 import com.web.backend.model.crewAssignment.Zone;
 import com.web.backend.services.crewAssignment.ZoneService;
@@ -44,5 +46,17 @@ public class ZoneController {
     public ResponseEntity<?> getZoneList(ZoneSearchSortParams searchParams) {
         log.info("ZoneController received POST request for zones with paging");
         return ResponseEntity.ok(service.getZoneList(searchParams));
+    }
+
+    @PostMapping(value = "/search/employees")
+    public ResponseEntity<?> getZoneEmployeeList(ZoneEmployeeSearchSortParams searchParams) {
+        log.info("ZoneController received POST request for employees for a zone with paging");
+        return ResponseEntity.ok(service.getZoneEmployeeList(searchParams));
+    }
+
+    @PostMapping(value = "/search/jobs")
+    public ResponseEntity<?> getZoneJobList(ZoneJobSearchSortParams searchParams) {
+        log.info("ZoneController received POST request for jobs for a zone with paging");
+        return ResponseEntity.ok(service.getZoneJobList(searchParams));
     }
 }
