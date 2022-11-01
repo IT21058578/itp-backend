@@ -1,31 +1,12 @@
 package com.web.backend;
 
-import com.github.javafaker.Faker;
-import com.web.backend.dto.ClientSimple;
-import com.web.backend.dto.EmployeeSimple;
-import com.web.backend.model.job.*;
-import com.web.backend.model.jobService.Service;
-import com.web.backend.model.user.Admin;
-import com.web.backend.model.user.AppUser;
-import com.web.backend.model.user.UserType;
-import com.web.backend.repositories.JobRepository;
-import com.web.backend.repositories.ScheduleRepository;
-import com.web.backend.repositories.UserRepository;
+import com.web.backend.repositories.scheduleManagement.JobRepository;
+import com.web.backend.repositories.scheduleManagement.ScheduleRepository;
+import com.web.backend.repositories.userManagement.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cglib.core.Local;
-import org.springframework.context.annotation.Bean;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 @SpringBootApplication @AllArgsConstructor @Slf4j
 public class BackendApplication {

@@ -20,6 +20,7 @@ public class Employee {
     private float jobCount = 0;
     private List<ZoneAssignment> zoneAssignmentsList;
     private List<JobAssignment> jobAssignmentsList;
+    private boolean isDisabled;
 
     @Data @AllArgsConstructor
     public static class ZoneAssignment {
