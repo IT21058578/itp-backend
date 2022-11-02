@@ -16,15 +16,15 @@ public class EmployeeController {
 
     @PostMapping
     public ResponseEntity<?> postEmployee(@RequestBody Employee employee) {
-        log.info("EmployeeController received CREATE request; {}", employee);
+        log.info("EmployeeController received POST request; {}", employee);
         service.postEmployee(employee);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping(params = {"id"})
-    public ResponseEntity<?> disableEmployee(@RequestParam String id) {
+    public ResponseEntity<?> toggleEmployeeDisable(@RequestParam String id) {
         log.info("EmployeeController received DELETE request with id {}", id);
-        service.disableEmployee(id);
+        service.toggleEmployeeDisable(id);
         return ResponseEntity.ok().build();
     }
 

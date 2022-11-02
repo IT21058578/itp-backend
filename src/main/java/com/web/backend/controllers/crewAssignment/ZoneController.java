@@ -17,7 +17,7 @@ public class ZoneController {
 
     @PostMapping
     public ResponseEntity<?> postZone(@RequestBody Zone zone) {
-        log.info("ZoneController received CREATE request; {}", zone);
+        log.info("ZoneController received POST request; {}", zone);
         service.postZone(zone);
         return ResponseEntity.ok().build();
     }

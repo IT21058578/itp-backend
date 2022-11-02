@@ -30,7 +30,7 @@ public class Job {
     private JobClientSimple client;
     private Review review;
 
-    @AllArgsConstructor @Data
+    @AllArgsConstructor @NoArgsConstructor @Data
     public static class JobCrewMemberSimple {
         private String id;
         private String firstName;
@@ -45,7 +45,7 @@ public class Job {
         }
     }
 
-    @AllArgsConstructor @Data
+    @AllArgsConstructor @NoArgsConstructor @Data
     public static class JobServiceSimple {
         private String id;
         private String name;
@@ -53,7 +53,7 @@ public class Job {
         private int quantity;
     }
 
-    @AllArgsConstructor @Data
+    @AllArgsConstructor @NoArgsConstructor @Data
     public static class JobClientSimple {
         private String id;
         private String firstName;

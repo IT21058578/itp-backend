@@ -3,6 +3,7 @@ package com.web.backend.services.crewAssignment;
 import com.web.backend.dto.crewAssignment.ZoneEmployeeSearchSortParams;
 import com.web.backend.dto.crewAssignment.ZoneJobSearchSortParams;
 import com.web.backend.dto.crewAssignment.ZoneSearchSortParams;
+import com.web.backend.exception.AlreadyExistsException;
 import com.web.backend.exception.NotFoundException;
 import com.web.backend.model.crewAssignment.Employee;
 import com.web.backend.model.crewAssignment.Zone;
@@ -36,8 +37,9 @@ public class ZoneService {
 
     public Page<Zone> getZoneList(ZoneSearchSortParams searchParams) {
         log.info("Getting zone page with params : {}", searchParams);
+
         log.info("Building aggregation pipeline...");
-        var pageRequest = PageRequest.of(searchParams.getPgNum(), searchParams.getPgNum());
+        var pageRequest = PageRequest.of(searchParams.getPgNum(), searchParams.getPgSize());
         var aggregationPipeline = new ArrayList<AggregationOperation>();
 
         log.info("Modifying pipeline according to sort params...");
@@ -57,7 +59,7 @@ public class ZoneService {
 
         log.info("Getting page...");
         var query = new Query().with(pageRequest);
-        var zoneList = template.aggregate(aggregation, "Zone" ,Zone.class).getMappedResults();
+        var zoneList = template.aggregate(aggregation, "zone" ,Zone.class).getMappedResults();
         long totalZoneCount = template.count(query.limit(0).skip(0), Zone.class);
         var zonePage = new PageImpl<>( zoneList, pageRequest, totalZoneCount);
 
@@ -85,6 +87,10 @@ public class ZoneService {
 
     public void postZone(Zone zone) {
         log.info("Creating new zone; {} ", zone);
+        if (repository.getZoneBySign(zone.getSign()).isPresent()) {
+            throw new AlreadyExistsException("Zone with specified sign already exists");
+        }
+
         zone.setCreatedOn(LocalDate.now());
         zone.setLastUpdatedOn(LocalDate.now());
         repository.save(zone);

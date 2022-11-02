@@ -125,10 +125,10 @@ public class EmployeeService {
         employeeRepo.save(employee);
     }
 
-    public void disableEmployee(String id) {
+    public void toggleEmployeeDisable(String id) {
         log.info("Disabling employee with id {}", id);
         Employee employee = getEmployee(id);
-        employee.setDisabled(true);
+        employee.setDisabled(!employee.isDisabled());
         employeeRepo.save(employee);
     }
 
@@ -136,10 +136,14 @@ public class EmployeeService {
         Employee dbEmployee = getEmployee(id);
 
         log.info("Updating employee details...");
-        employee.setId(id);
+        dbEmployee.setFirstName(employee.getFirstName());
+        dbEmployee.setLastName(employee.getLastName());
+        dbEmployee.setEmail(employee.getEmail());
+        dbEmployee.setMobile(employee.getMobile());
+        dbEmployee.setJobTitle(employee.getJobTitle());
 
         log.info("Saving updated employee...");
-        employeeRepo.save(employee);
+        employeeRepo.save(dbEmployee);
 
     }
 
@@ -172,7 +176,7 @@ public class EmployeeService {
 
         log.info("Getting page...");
         var query = new Query().with(pageRequest);
-        var employeeList = template.aggregate(aggregation, "Employee" ,Employee.class).getMappedResults();
+        var employeeList = template.aggregate(aggregation, "employee" ,Employee.class).getMappedResults();
         long totalCount = template.count(query.limit(0).skip(0), Employee.class ); //TODO: This makes the code highly inefficient. Also incompatible with match operations.
         var employeePage = new PageImpl<>(employeeList, pageRequest, totalCount);
 
