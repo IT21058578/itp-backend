@@ -10,18 +10,18 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection="stocks") @Data
 public class stocks {
     private String id;
-    private String su_name;
-    private String su_contact;
-    private String  su_email;
-    private String product_type;
-    private Number monthly_due;
-    public stocks(String id, String su_name, String  su_contact, String su_email,
-                    Number monthly_due, String contact, String product_type){
+    private String productID;
+    private String productType;
+    private String availableStock;
+    private String  NextPurchaseDate;
+    private String  test;
+
+    public stocks(String id, String productID, String  productType, String availableStock,
+                     String NextPurchaseDate){
         this.id =id;
-        this.su_name =su_name;
-        this.su_contact =su_contact;
-        this.su_email =su_email;
-        this.monthly_due =monthly_due;
-        this.product_type =product_type;
+        this.productID =productID;
+        this.productType =productType;
+        this.availableStock =availableStock;
+        this.NextPurchaseDate =NextPurchaseDate;
     }
 }
