@@ -21,7 +21,7 @@ public class Invoice {
   private String lastName;
   private String address;
   //services related details.
-  private List<Service> services;
+  private Service[] services;
   private LocalDate invoiceDate;
   private double invoiceTotal;
   private boolean paymentStatus;
@@ -42,7 +42,7 @@ public class Invoice {
                  String firstName,
                  String lastName,
                  String address,
-                 List<Service> services,
+                 Service[] services,
                  LocalDate invoiceDate,
                  boolean paymentStatus
   ){
