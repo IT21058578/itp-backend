@@ -1,5 +1,6 @@
 package com.web.backend.model.job;
 
+import com.web.backend.model.crewAssignment.Employee;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,13 +9,15 @@ import org.springframework.data.annotation.Id;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor @NoArgsConstructor @Data
 public class Job {
     @Id
     private String id;
-    private String zone;
+    private String zoneId;
+    private String zoneSign;
     private String address;
     private String paymentId;
     private String invoiceId;
@@ -28,14 +31,22 @@ public class Job {
     private JobClientSimple client;
     private Review review;
 
-    @AllArgsConstructor @Data
+    @AllArgsConstructor @NoArgsConstructor @Data
     public static class JobCrewMemberSimple {
         private String id;
         private String firstName;
         private String lastName;
+        private String jobTitle;
+
+        public JobCrewMemberSimple(Employee employee) {
+            this.id = employee.getId();
+            this.firstName = employee.getFirstName();
+            this.lastName = employee.getLastName();
+            this.jobTitle = employee.getJobTitle().toString();
+        }
     }
 
-    @AllArgsConstructor @Data
+    @AllArgsConstructor @NoArgsConstructor @Data
     public static class JobServiceSimple {
         private String id;
         private String name;
@@ -43,7 +54,7 @@ public class Job {
         private int quantity;
     }
 
-    @AllArgsConstructor @Data
+    @AllArgsConstructor @NoArgsConstructor @Data
     public static class JobClientSimple {
         private String id;
         private String firstName;

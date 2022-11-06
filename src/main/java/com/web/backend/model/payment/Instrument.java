@@ -27,7 +27,7 @@ public class Instrument {
             String expiryDate) {
         this.email = email;
         this.cardNumber = cardNumber;
-        this.cardType = cardType;
+        this.cardType = cardType.toUpperCase();
         this.cvv = cvv;
         this.expiryDate = expiryDate;
     }
