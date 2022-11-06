@@ -1,5 +1,6 @@
 package com.web.backend.services.userManagement;
 
+import com.github.javafaker.App;
 import com.web.backend.dto.userManagement.ExtendedUserData;
 import com.web.backend.dto.userManagement.UserSearchSortParameters;
 import com.web.backend.dto.userManagement.UserSimple;
