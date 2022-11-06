@@ -43,6 +43,8 @@ public class InstrumentService {
         if(instrumentOptional.isPresent()){
             Instrument _instrument = instrumentOptional.get();
             _instrument.setExpiryDate(instrument.getExpiryDate());
+            _instrument.setCvv(instrument.getCvv());
+            _instrument.setCardType(instrument.getCardType());
 
             return new ResponseEntity<>(instrumentRepository.save(_instrument), HttpStatus.OK);
         }else{

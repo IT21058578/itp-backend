@@ -15,9 +15,14 @@ import java.util.List;
 public class InstrumentController {
     private final InstrumentService instrumentService;
 
-    @GetMapping
+    @GetMapping(params ={"email"})
     public Iterable<Instrument> fetchAllInvoiceByEmail(@RequestParam("email") String email){
         return instrumentService.getAllInstrumentsByEmail(email);
+    }
+
+    @GetMapping(params ={"id"})
+    public Instrument getInstrumentByID(@RequestParam("id") String id){
+        return instrumentService.getInstrumentById(id);
     }
 
     @PostMapping
