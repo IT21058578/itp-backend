@@ -9,6 +9,7 @@ import com.web.backend.model.user.AppUser;
 import com.web.backend.repositories.userManagement.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -45,7 +46,7 @@ public class UserService {
 
     public void changeUserRole(String email, String role) {
         log.info("Getting details of user with email : {}", email);
-        AppUser dbUser = repo.findById(email).orElseThrow(NotFoundException::new);
+        AppUser dbUser = repo.findByEmail(email).orElseThrow(NotFoundException::new);
 
         log.info("Changing user role...");
         dbUser.setPermissions(List.of(role.toUpperCase(Locale.ROOT)));
@@ -78,6 +79,7 @@ public class UserService {
         switch(searchParams.getSearchSelect()) {
             case "email" -> aggregationPipeline.add(Aggregation.match(Criteria.where("email").regex(searchParams.getSearchString(), "i")));
             case "name" -> aggregationPipeline.add(Aggregation.match(Criteria.where("name").regex(searchParams.getSearchString(), "i")));
+            case "tempId" -> aggregationPipeline.add(Aggregation.match(Criteria.where("_id").is(new ObjectId(searchParams.getSearchString()))));
         }
 
         log.info("Modifying pipeline according to sorting parameters...");

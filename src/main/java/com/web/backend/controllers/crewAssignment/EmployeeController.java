@@ -1,6 +1,5 @@
 package com.web.backend.controllers.crewAssignment;
 
-import com.web.backend.dto.crewAssignment.EmployeeJobSearchSortParams;
 import com.web.backend.dto.crewAssignment.EmployeeSearchSortParams;
 import com.web.backend.model.crewAssignment.Employee;
 import com.web.backend.services.crewAssignment.EmployeeService;
@@ -21,10 +20,10 @@ public class EmployeeController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping(params = {"id"})
-    public ResponseEntity<?> toggleEmployeeDisable(@RequestParam String id) {
-        log.info("EmployeeController received DELETE request with id {}", id);
-        service.toggleEmployeeDisable(id);
+    @PutMapping(value="/toggle", params = {"id", "disable"})
+    public ResponseEntity<?> toggleEmployeeDisable(@RequestParam String id, @RequestParam Boolean disable) {
+        log.info("EmployeeController received PUT request to toggle disabled status for {} to {}", id, disable);
+        service.toggleEmployeeDisable(id, disable);
         return ResponseEntity.ok().build();
     }
 
@@ -56,15 +55,9 @@ public class EmployeeController {
         return ResponseEntity.ok(service.getEmployee(id));
     }
 
-    @PostMapping(value = "/search")
-    public ResponseEntity<?> getEmployeeList(EmployeeSearchSortParams searchParams) {
-        log.info("EmployeeController received POST request for employees with paging");
+    @PostMapping(value="/search")
+    public ResponseEntity<?> getEmployeeList(@RequestBody EmployeeSearchSortParams searchParams) {
+        log.info("EmployeeController received GET request with params {}", searchParams);
         return ResponseEntity.ok(service.getEmployeeList(searchParams));
-    }
-
-    @PostMapping(value = "/search/jobs")
-    public ResponseEntity<?> getEmployeeJobs(EmployeeJobSearchSortParams searchParams) {
-        log.info("EmployeeController received POST request for employee jobs with paging");
-        return ResponseEntity.ok(service.getEmployeeJobs(searchParams));
     }
 }

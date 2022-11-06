@@ -10,5 +10,9 @@ public class EmployeeSearchSortParams {
     private int pgSize = 10;
     private String sortCol = "";
     private String sortDir = "";
-    private String zoneSelect = ""; //Find by zone id.
+    private String employeeId = "";
+    private String zoneId = "";
+    private String jobId = "";
+    private String status = "";
+    private boolean paging = true;
 }

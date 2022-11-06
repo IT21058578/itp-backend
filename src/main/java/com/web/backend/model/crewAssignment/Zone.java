@@ -14,4 +14,5 @@ public class Zone {
     private String description; //Description
     private LocalDate createdOn;
     private LocalDate lastUpdatedOn;
+    private boolean disabled;
 }

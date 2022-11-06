@@ -1,7 +1,7 @@
 package com.web.backend.controllers.scheduleManagement;
 
 import com.web.backend.dto.schedManagement.JobSearchSortParameters;
-import com.web.backend.dto.userManagement.UserJobSearchSortParameters;
+import com.web.backend.dto.schedManagement.SimplifiedJobSearchSortParameters;
 import com.web.backend.model.job.Job;
 import com.web.backend.services.scheduleManagement.JobService;
 import lombok.AllArgsConstructor;
@@ -21,17 +21,17 @@ public class JobController {
         return ResponseEntity.ok().body(jobCalenderList);
     }
 
-    @PostMapping(value = "/search")
-    public ResponseEntity<?> getJobList(@RequestBody JobSearchSortParameters searchParams) {
+    @PostMapping(value = "/searchsimple")
+    public ResponseEntity<?> getJobList(@RequestBody SimplifiedJobSearchSortParameters searchParams) {
         log.info("JobController received GET Request with params {pgNum, pgSize, ...}");
-        var jobSimplePage = jobService.getJobList(searchParams);
+        var jobSimplePage = jobService.getSimplifiedJobList(searchParams);
         return ResponseEntity.ok().body(jobSimplePage);
     }
 
-    @PostMapping(value = "/client")
-    public ResponseEntity<?> getClientJobsList(@RequestBody UserJobSearchSortParameters searchParams) {
-        log.info("JobController received GET Request with params {userId} for completed");
-        var jobPage = jobService.getClientJobsList(searchParams);
+    @PostMapping(value = "/search")
+    public ResponseEntity<?> getClientJobsList(@RequestBody JobSearchSortParameters searchParams) {
+        log.info("JobController received GET Request with params {}", searchParams);
+        var jobPage = jobService.getJobList(searchParams);
         return ResponseEntity.ok().body(jobPage);
     }
 

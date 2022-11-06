@@ -112,4 +112,21 @@ public class AuthorizationService {
         log.info("Saving newly configured user...");
         repository.save(existingUser);
     }
+
+    public void resetUserPasswordWhenAuthorized(String email, String password, String resetToken) {
+        log.info("Checking if user exists...");
+        AppUser existingUser = repository.findByEmail(email).orElseThrow(NotFoundException::new);
+
+        log.info("Matching reset token...");
+        if (!existingUser.getResetToken().equals(resetToken)) {
+            throw new ServerWebInputException("Reset token does not match!");
+        } else {
+            log.info("Configuring user details...");
+            existingUser.setPassword(password);
+            existingUser.setResetToken(UUID.randomUUID().toString());
+        }
+
+        log.info("Saving newly configured user...");
+        repository.save(existingUser);
+    }
 }

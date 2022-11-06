@@ -1,17 +1,17 @@
 package com.web.backend.services.crewAssignment;
 
-import com.web.backend.dto.crewAssignment.EmployeeJobSearchSortParams;
 import com.web.backend.dto.crewAssignment.EmployeeSearchSortParams;
+import com.web.backend.exception.AlreadyExistsException;
 import com.web.backend.exception.NotFoundException;
 import com.web.backend.model.crewAssignment.Employee;
 import com.web.backend.model.crewAssignment.EmployeeType;
 import com.web.backend.model.crewAssignment.Zone;
 import com.web.backend.model.job.Job;
-import com.web.backend.model.job.Schedule;
 import com.web.backend.repositories.crewAssignment.EmployeeRepository;
 import com.web.backend.services.scheduleManagement.JobService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -26,7 +26,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Service @Slf4j @AllArgsConstructor
@@ -42,6 +42,7 @@ public class EmployeeService {
     }
 
     public Job assignEmployeesToJob(Job job) {
+        //TODO: Remake this function
         log.info("Assigning crew to job with id {}", job.getId());
 
         if ( job.getZoneId() == null ) {
@@ -58,8 +59,6 @@ public class EmployeeService {
         log.info("Modifying pipeline according to job parameters...");
         aggregationPipeline.add(Aggregation.match(Criteria.where("isDisabled").is(false))); //Get only enabled employees
         aggregationPipeline.add(Aggregation.match(Criteria.where("zoneAssignmentsList.id").regex(job.getZoneId())));
-        aggregationPipeline.add(Aggregation.match(Criteria.where("jobAssignmentsList.startTime").lt(job.getStartTime()).lt(job.getEndTime())));
-        aggregationPipeline.add(Aggregation.match(Criteria.where("jobAssignmentsList.endTime").gt(job.getStartTime()).gt(job.getEndTime())));
 
         log.info("Finalizing aggregation pipeline...");
         var aggregation = Aggregation.newAggregation(aggregationPipeline);
@@ -79,6 +78,8 @@ public class EmployeeService {
                 .filter(emp -> emp.getJobTitle().equals(EmployeeType.CLEANER)).findFirst()
                 .orElseThrow(() -> new NotFoundException("Unable to find cleaners according to job specification")));
 
+        //TODO: Add jobAssignments here.
+
         log.info("Inserting crew list to job...");
         job.setCrewList(selectedEmployeeList.stream()
                 .map(Job.JobCrewMemberSimple::new).collect(Collectors.toList()));
@@ -94,7 +95,7 @@ public class EmployeeService {
         if (!unassign) {
             if (zoneAssignmentList.stream().map(Employee.ZoneAssignment::getId)
                     .anyMatch(id -> id.equals(zoneId))) {
-                throw new IllegalStateException("Employee is already assigned to this zone");
+                throw new AlreadyExistsException("Employee is already assigned to this zone");
             }
 
             Zone zone = zoneService.getZone(zoneId);
@@ -104,7 +105,7 @@ public class EmployeeService {
         } else {
             if (zoneAssignmentList.stream().map(Employee.ZoneAssignment::getId)
                     .noneMatch(id -> id.equals(zoneId))) {
-                throw new IllegalStateException("Employee is not assigned to this zone");
+                throw new AlreadyExistsException("Employee is not assigned to this zone");
             }
 
             zoneAssignmentList.removeIf(zone -> zone.getId().equals(zoneId));
@@ -120,15 +121,14 @@ public class EmployeeService {
         log.info("Creating new employee : {}", employee);
         employee.setJoinedOn(LocalDate.now());
         employee.setZoneAssignmentsList(Collections.emptyList());
-        employee.setJobAssignmentsList(Collections.emptyList());
         employee.setDisabled(false);
         employeeRepo.save(employee);
     }
 
-    public void toggleEmployeeDisable(String id) {
+    public void toggleEmployeeDisable(String id, boolean disable) {
         log.info("Disabling employee with id {}", id);
         Employee employee = getEmployee(id);
-        employee.setDisabled(!employee.isDisabled());
+        employee.setDisabled(disable);
         employeeRepo.save(employee);
     }
 
@@ -158,62 +158,59 @@ public class EmployeeService {
         log.info("Building aggregation pipeline...");
         var pageRequest = PageRequest.of(searchParams.getPgNum(), searchParams.getPgNum());
         var aggregationPipeline = new ArrayList<AggregationOperation>();
+        aggregationPipeline.add(Aggregation.match(Criteria.where(""))); //So that error is not thrown later
 
-        log.info("Modifying pipeline according to sort params...");
+        if (!searchParams.getJobId().isBlank()) {
+            log.info("jobId is present");
+            Job job = jobService.getJobPageDetails(searchParams.getJobId());
+            var employeeIds = job.getCrewList().stream().map(e -> new ObjectId(e.getId())).toList();
+            aggregationPipeline.add(Aggregation.match(Criteria.where("_id").in(employeeIds)));
+        }
+
+        log.info("Modifying pipeline according to searching params");
+        if (!searchParams.getZoneId().isBlank()) {
+            log.info("zoneId is present");
+            aggregationPipeline.add(Aggregation.match(Criteria.where("zoneAssignmentsList")
+                    .elemMatch(Criteria.where("_id").is(new ObjectId(searchParams.getZoneId())))));
+        }
+
+        if (!searchParams.getEmployeeId().isBlank()) {
+            log.info("employeeId is present");
+            aggregationPipeline.add(Aggregation.match(Criteria.where("_id").is(new ObjectId(searchParams.getEmployeeId()))));
+        }
+
+        if (!searchParams.getStatus().isBlank()) {
+            log.info("employeeId is present");
+            String status = searchParams.getStatus().toLowerCase(Locale.ROOT);
+            if (status.equals("true") || status.equals("false")) {
+                aggregationPipeline.add(Aggregation.match(Criteria.where("disabled").regex(status)));
+            }
+        }
+
         if (!searchParams.getSortCol().isBlank()) {
+            log.info("Modifying pipeline according to sort params...");
             switch (searchParams.getSortDir()) {
                 case "asc" -> aggregationPipeline.add(Aggregation.sort(Sort.Direction.ASC, searchParams.getSortCol()));
                 case "desc" -> aggregationPipeline.add(Aggregation.sort(Sort.Direction.DESC, searchParams.getSortCol()));
             }
         }
 
-        log.info("Limiting query according to page params...");
-        aggregationPipeline.add(Aggregation.skip((searchParams.getPgNum() - 1) * searchParams.getPgSize()));
-        aggregationPipeline.add(Aggregation.limit(searchParams.getPgSize()));
-
-        log.info("Finalizing pipeline...");
+        log.info("Getting total number of elements...");
         var aggregation = Aggregation.newAggregation(aggregationPipeline);
+        long totalCount = template.aggregate(aggregation, "employee", Employee.class).getMappedResults().size();
 
-        log.info("Getting page...");
-        var query = new Query().with(pageRequest);
+        if (searchParams.isPaging()) {
+            log.info("Limiting query according to page params...");
+            aggregationPipeline.add(Aggregation.skip((searchParams.getPgNum() - 1) * searchParams.getPgSize()));
+            aggregationPipeline.add(Aggregation.limit(searchParams.getPgSize()));
+        }
+
+        log.info("Getting elements...");
+        aggregation = Aggregation.newAggregation(aggregationPipeline);
         var employeeList = template.aggregate(aggregation, "employee" ,Employee.class).getMappedResults();
-        long totalCount = template.count(query.limit(0).skip(0), Employee.class ); //TODO: This makes the code highly inefficient. Also incompatible with match operations.
         var employeePage = new PageImpl<>(employeeList, pageRequest, totalCount);
 
         log.info("Returning page...");
         return employeePage;
-    }
-
-    public Page<Job> getEmployeeJobs(EmployeeJobSearchSortParams searchParams) {
-        log.info("Building aggregation pipeline...");
-        var pageRequest = PageRequest.of(searchParams.getPgNum(), searchParams.getPgNum());
-        var aggregationPipeline = new ArrayList<AggregationOperation>();
-
-        log.info("Modifying pipeline according to sort params...");
-        if (!searchParams.getSortCol().isBlank()) {
-            switch (searchParams.getSortDir()) {
-                case "asc" -> aggregationPipeline.add(Aggregation.sort(Sort.Direction.ASC, searchParams.getSortCol()));
-                case "desc" -> aggregationPipeline.add(Aggregation.sort(Sort.Direction.DESC, searchParams.getSortCol()));
-            }
-        }
-
-        log.info("Modifying pipeline according to search params...");
-        aggregationPipeline.add(Aggregation.match(Criteria.where("crewList").elemMatch(Criteria.where("id").is(searchParams.getId()))));
-
-        log.info("Limiting query according to page params...");
-        aggregationPipeline.add(Aggregation.skip((searchParams.getPgNum() - 1) * searchParams.getPgSize()));
-        aggregationPipeline.add(Aggregation.limit(searchParams.getPgSize()));
-
-        log.info("Finalizing pipeline...");
-        var aggregation = Aggregation.newAggregation(aggregationPipeline);
-
-        log.info("Getting page...");
-        var query = new Query().with(pageRequest);
-        var jobList = template.aggregate(aggregation, "Job" , Job.class).getMappedResults();
-        long totalCount = template.count(query.limit(0).skip(0), Job.class ); //TODO: This makes the code highly inefficient. Also incompatible with match operations.
-        var jobPage = new PageImpl<>(jobList, pageRequest, totalCount);
-
-        log.info("Returning page...");
-        return jobPage;
     }
 }
